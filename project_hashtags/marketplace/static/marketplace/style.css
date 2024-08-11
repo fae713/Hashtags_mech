@@ -1,0 +1,49 @@
+/* path -> static/css/style.css */
+
+@import url('https://fonts.googleapis.com/css?family=Lato:300');
+
+body {
+    background: #3d3d3d;
+    font-family: "Lato", sans-serif;
+}
+
+.login-container {
+    width: 300px;
+    padding: 30px;
+    background: white;
+    border-radius: 10px;
+    box-shadow: 0px 0px 10px 0px rgba(0,0,0,0.1);
+    margin: auto;
+}
+
+form div {
+    margin-bottom: 20px;
+}
+
+input[type="text"], input[type="password"] {
+    width: 100%;
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    font-size: 14px;
+}
+
+button[type="submit"] {
+    width: 100%;
+    padding: 10px;
+    background-color: #4CAF50;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+}
+
+.registration-link, .logout-link {
+    text-align: center;
+    margin-top: 20px;
+}
+
+.registration-link a, .logout-link a {
+    color: #4CAF50;
+    text-decoration: none;
+}

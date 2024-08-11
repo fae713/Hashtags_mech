@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Home - Hashtags Mech</title>
+</head>
+<body>
+    <h1>Welcome to Hashtags Mech</h1>
+
+    {% if user.is_authenticated %}
+        <p>Hello, {{ user.username }}! You are logged in.</p>
+        <form id="logout-form" method="post" action="{% url 'marketplace:logout' %}">
+            {% csrf_token %}
+            <button type="submit">Logout</button>
+        </form>
+    {% else %}
+        <p>You are not logged in.</p>
+        <li><a href="{% url 'marketplace:login' %}">Login</a></li>
+        <li><a href="{% url 'marketplace:register_form' %}">Register</a></li>
+    {% endif %}
+
+    <h2>Our Collections</h2>
+    <ul>
+        <li><a href="#">Wild Thoughts</a></li>
+        <li><a href="#">Butterfly</a></li>
+        <li><a href="#">Holy</a></li>
+    </ul>
+</body>
+</html>

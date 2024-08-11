@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Register</title>
+    {% load static %}
+    <link rel="stylesheet" href="{% static 'marketplace/style.css' %}">
+</head>
+<body>
+    <h2>Register</h2>
+    <form id="registration-form" method="post" action="{% url 'marketplace:register' %}">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <button type="submit">Register</button>
+    </form>
+    <div id="form-errors"></div>
+
+    <script>
+        document.getElementById('registration-form').addEventListener('submit', function(event) {
+            event.preventDefault();
+            const formData = new FormData(this);
+
+            fetch('{% url "marketplace:register" %}', {
+                method: 'POST',
+                body: formData,
+                headers: {
+                    'X-Requested-With': 'XMLHttpRequest'
+                }
+            }).then(response => response.json()).then(data => {
+                if (data.error) {
+                    document.getElementById('form-errors').innerHTML = JSON.stringify(data.error);
+                } else {
+                    alert(data.message);
+                    window.location.href = '{% url "marketplace:login" %}';
+                }
+            });
+        });
+    </script>
+</body>
+</html>

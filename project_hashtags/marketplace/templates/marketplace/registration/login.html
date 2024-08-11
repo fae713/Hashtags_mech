@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login - Hashtags Mech</title>
+    {% load static %}
+    <link rel="stylesheet" href="{% static 'marketplace/style.css' %}">
+</head>
+<body>
+    <h2>Login</h2>
+    <form method="post" action="{% url 'marketplace:login' %}">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <input type="hidden" name="next" value="{% url 'marketplace:index' %}">
+        <button type="submit">Login</button>
+    </form>
+    <p>Don't have an account? <a href="{% url 'marketplace:register_form' %}">Register here</a>.</p>
+</body>
+</html>

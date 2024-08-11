@@ -7,7 +7,7 @@
 </head>
 <body>
     <h2>Register</h2>
-    <form id="registration-form" method="post" action="{% url 'marketplace:register' %}">
+    <form id="registration-form" method="post" action="{% url 'register' %}">
         {% csrf_token %}
         {{ form.as_p }}
         <button type="submit">Register</button>
@@ -30,7 +30,7 @@
                     document.getElementById('form-errors').innerHTML = JSON.stringify(data.error);
                 } else {
                     alert(data.message);
-                    window.location.href = '{% url "marketplace:login" %}';
+                    window.location.href = '{% url "login" %}';
                 }
             });
         });

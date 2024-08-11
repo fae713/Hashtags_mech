@@ -9,12 +9,13 @@
 </head>
 <body>
     <h2>Login</h2>
-    <form method="post" action="{% url 'marketplace:login' %}">
+    <form method="post" action="{% url 'login' %}">
         {% csrf_token %}
         {{ form.as_p }}
-        <input type="hidden" name="next" value="{% url 'marketplace:index' %}">
+        <input type="hidden" name="next" value="{% url 'index' %}">
         <button type="submit">Login</button>
     </form>
-    <p>Don't have an account? <a href="{% url 'marketplace:register_form' %}">Register here</a>.</p>
+    <p><a href="{% url 'password_reset' %}">Forgot your password?</a></p>
+    <p>Don't have an account? <a href="{% url 'register_form' %}">Register here</a>.</p>
 </body>
 </html>

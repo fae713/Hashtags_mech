@@ -10,7 +10,9 @@ For the full list of settings and their values, see
 https://docs.djangoproject.com/en/5.1/ref/settings/
 """
 
+from decouple import Config, RepositoryEnv
 from pathlib import Path
+import os
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -68,7 +70,7 @@ ROOT_URLCONF = 'hashtags_mech.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [],
+        'DIRS': [os.path.join(BASE_DIR, 'marketplace/templates')],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -141,3 +143,26 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 CSRF_TRUSTED_ORIGINS = ["http://localhost:8000/"]
 # LOGIN_REDIRECT_URL = ''
+
+# EMAIL SMPT
+
+"""
+config = Config(RepositoryEnv('.env'))
+
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+EMAIL_HOST = 'smtp.gmail.com'
+EMAIL_PORT = 587
+EMAIL_USE_TLS = True
+EMAIL_HOST_USER = config('EMAIL_HOST_USER')
+EMAIL_HOST_PASSWORD = config('EMAIL_HOST_PASSWORD')
+"""
+
+EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
+
+
+#LOGIN REDIRECT
+# settings.py
+
+LOGIN_REDIRECT_URL = '/'
+LOGOUT_REDIRECT_URL = '/'
+

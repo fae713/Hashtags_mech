@@ -6,6 +6,12 @@ from django.db import IntegrityError
 from django.contrib.auth.models import User
 from .models import ShoppingCart
 from .forms import UserRegistrationForm
+from django.shortcuts import render, redirect
+from django.contrib.auth.decorators import login_required
+from django.contrib.auth.forms import UserChangeForm
+from django.urls import reverse_lazy
+from django.views.generic.edit import UpdateView
+from django.contrib.auth import update_session_auth_hash
 
 
 
@@ -43,3 +49,16 @@ def register(request):
 def register_form(request):
     form = UserRegistrationForm()
     return render(request, 'marketplace/registration/register.html', {'form': form})
+
+
+@login_required
+def profile_view(request):
+    if request.method == 'POST':
+        form = UserChangeForm(request.POST, instance=request.user)
+        if form.is_valid():
+            user = form.save()
+            update_session_auth_hash(request, user)  # Keeps the user logged in after password change
+            return redirect('marketplace:profile')
+    else:
+        form = UserChangeForm(instance=request.user)
+    return render(request, 'marketplace/registration/profile.html', {'form': form})

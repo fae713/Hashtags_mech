@@ -3,16 +3,18 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Enter New Password</title>
+    <title>User Profile</title>
     {% load static %}
     <link rel="stylesheet" href="{% static 'marketplace/style.css' %}">
 </head>
 <body>
-    <h2>Enter New Password</h2>
+    <h2>User Profile</h2>
     <form method="post">
         {% csrf_token %}
         {{ form.as_p }}
-        <button type="submit">Reset Password</button>
+        <button type="submit">Update Profile</button>
     </form>
+    <p><a href="{% url 'password_change' %}">Change Password</a></p>
+    <p><a href="{% url 'index' %}">Back to home</a></p>
 </body>
 </html>

@@ -24,7 +24,7 @@ from django.http import Http404
 urlpatterns = [
     #path('', index, name='index'),
     path('admin/', admin.site.urls),
-    path('marketplace/', include('marketplace.urls')),
+    path('', include('marketplace.urls')),
     path("__debug__/", include("debug_toolbar.urls")),
 ]
 

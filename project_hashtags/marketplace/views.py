@@ -27,7 +27,7 @@ from django.urls import reverse
 from urllib.parse import quote_plus, urlencode
 from django.http import JsonResponse, HttpResponse, HttpResponseRedirect
 from django.http import HttpResponseNotFound, HttpResponseServerError, Http404
-from .models import Product, Category, Collection, Order, ShoppingCart, CartItem, Address, OrderItem
+from .models import Product, Category, Collection, Subcategory, Order, ShoppingCart, CartItem, Address, OrderItem
 from django.utils.datastructures import MultiValueDictKeyError
 from django.core.exceptions import ValidationError, MultipleObjectsReturned, PermissionDenied, ObjectDoesNotExist
 from django.http import QueryDict
@@ -337,3 +337,127 @@ def get_category_by_name(request, category_name):
     except Category.DoesNotExist:
         return JsonResponse({"error": f"Category with name: {category_name} does not exist."}, status=404)
 
+
+
+"""SEARCH AND FILTERS MANAGEMENT"""
+
+@require_http_methods(["POST", "GET"])
+def search_products_categories_and_collections(request):
+    search_term = request.GET.get('search', '') if request.method == 'GET' else request.POST.get('search', '')
+    search_term = search_term.strip().lower()
+
+    # Search for collections
+    collection_results = Collection.objects.filter(
+        name__icontains=search_term
+    ).order_by('name')
+
+    # If collections found, get all related categories and subcategories
+    if collection_results.exists():
+        collections = collection_results
+        # Get all related subcategories
+        subcategories = Subcategory.objects.filter(collection__in=collections)
+        # Get all related categories
+        categories = Category.objects.filter(subcategory__in=subcategories)
+        # Get all related products
+        product_results = Product.objects.filter(category__in=categories).select_related('category').order_by('name')
+    else:
+        # If no collections are found, proceed with the usual search
+        product_results = Product.objects.filter(
+            Q(name__icontains=search_term) | Q(description__icontains=search_term)
+        ).select_related('category').order_by('name')
+
+    # Search for categories
+    category_results = Category.objects.filter(
+        name__icontains=search_term
+    ).order_by('name')
+
+    # Search for collections again to include non-empty results
+    collections_results = Collection.objects.filter(
+        name__icontains=search_term
+    ).order_by('name')
+
+    # Pagination parameters
+    page_number = request.GET.get('page', 1)
+    items_per_page = 10
+
+    paginator_products = Paginator(product_results, items_per_page)
+    paginator_categories = Paginator(category_results, items_per_page)
+    paginator_collections = Paginator(collections_results, items_per_page)
+
+    try:
+        products_page = paginator_products.get_page(page_number)
+        categories_page = paginator_categories.get_page(page_number)
+        collections_page = paginator_collections.get_page(page_number)
+    except EmptyPage:
+        return JsonResponse({"error": "Page not found"}, status=404)
+
+    json_data = {
+        'products': [product.to_dict(request) for product in products_page],
+        'categories': [category.to_dict(request) for category in categories_page],
+        'collections': [collection.to_dict(request) for collection in collections_page],
+        'current_page': products_page.number,
+        'total_pages': {
+            'products': paginator_products.num_pages,
+            'categories': paginator_categories.num_pages,
+            'collections': paginator_collections.num_pages
+        }
+    }
+
+    return JsonResponse(json_data, safe=False)
+
+
+
+@csrf_exempt
+@require_http_methods(["GET", "POST"])
+def apply_filters_to_search_results(request):
+    search_results = request.session.get('search_results', [])
+
+    if search_results:
+        filtered_results = []
+
+        # Deserialize the search results from the session
+        for result in search_results:
+            model = result.get('model')
+            pk = result.get('pk')
+
+            if model == 'product':
+                try:
+                    product = Product.objects.get(product_id=pk)
+                    filtered_results.append(product)
+                except Product.DoesNotExist:
+                    continue
+            elif model == 'category':
+                try:
+                    category = Category.objects.get(category_id=pk)
+                    filtered_results.append(category)
+                except Category.DoesNotExist:
+                    continue
+            elif model == 'collection':
+                try:
+                    collection = Collection.objects.get(collection_id=pk)
+                    filtered_results.append(collection)
+                except Collection.DoesNotExist:
+                    continue
+
+        min_price = int(request.POST.get('min_price', 0))
+        max_price = int(request.POST.get('max_price', 1_000_000_000))
+        category_filter = request.POST.get('category', None)
+
+        if isinstance(filtered_results[0], Product):
+            filtered_results = [product for product in filtered_results if min_price <= product.price <= max_price]
+            if category_filter:
+                filtered_results = [product for product in filtered_results if product.category.name == category_filter]
+
+        elif isinstance(filtered_results[0], Category):
+            if category_filter:
+                filtered_results = [category for category in filtered_results if category.name == category_filter]
+
+        elif isinstance(filtered_results[0], Collection):
+            if category_filter:
+                filtered_results = [collection for collection in filtered_results if collection.name == category_filter]
+
+        filtered_results_json = [result.to_dict(request) for result in filtered_results]
+
+        return JsonResponse(filtered_results_json, safe=False)
+    else:
+        return JsonResponse({"error": "No search results found in session."}, status=404)

@@ -43,5 +43,10 @@ urlpatterns = [
     path('categories/<int:id>/update/', views.update_details_of_category_with_category_id, name='update-category-details'),
     path('categories/<int:id>/delete/', views.remove_product_category_with_category_id, name='delete-category'),
     path('categories/<str:category_name>/', views.get_category_by_name, name='get_category_by_name'),
+
+
+    #SEARCH AND FILTERS MANAGEMENT
+    path('search/', views.search_products_categories_and_collections, name='search-products-categories-collections'),
+    path('search/filter/', views.apply_filters_to_search_results, name='apply-filters-to-search'),
 ]
 

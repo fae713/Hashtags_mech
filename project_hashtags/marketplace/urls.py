@@ -25,6 +25,9 @@ urlpatterns = [
     path('register/', views.register_form, name='register_form'),  # To display the form
     path('register/submit/', views.register, name='register'),
     path('profile/', views.profile_view, name='profile'),
+    path('profile/', views.get_user_profile, name='user_profile'),
+    path('profile/update/', views.update_user_profile, name='update_user_profile'),
+    path('orders/', views.list_orders_placed_by_user, name='list_user_orders'),
 
 
     #PRODUCTS MANAGEMENT

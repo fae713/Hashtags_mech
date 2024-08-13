@@ -38,11 +38,18 @@ from django.contrib import messages
 
 
 
-"""Decorator to render the homepage (LANDING PAGE)"""
+"""
+Decorator to render the homepage (LANDING PAGE)
+"""
 @require_http_methods(["GET"])
 def index(request):
     return render(request, 'marketplace/index.html')
 
+
+
+""""
+USER MANAGEMENT
+"""
 @require_http_methods(["POST"])
 def register(request):
     form = UserRegistrationForm(request.POST)
@@ -72,6 +79,61 @@ def register(request):
 def register_form(request):
     form = UserRegistrationForm()
     return render(request, 'marketplace/registration/register.html', {'form': form})
+
+
+@login_required
+@require_http_methods(["GET"])
+def get_user_profile(request):
+    user_id = request.user.id
+    specific_user = User.objects.get(id=user_id)
+    user_details = {
+        'id': specific_user.id,
+        'username': specific_user.username,
+        'email': specific_user.email,
+        'first_name': specific_user.first_name,
+        'last_name': specific_user.last_name,
+    }
+    return render(request, 'store/userprofile.html', {'user': user_details})
+
+@login_required
+@require_http_methods(["PUT"])
+def update_user_profile(request):
+    if request.content_type != 'application/json':
+        return JsonResponse({"error": "Invalid content type. Please use JSON."}, status=400)
+
+    try:
+        user_to_update = User.objects.get(id=request.user.id)
+        data = QueryDict(request.body).dict()
+
+        # Only allow specific fields to be updated
+        allowed_fields = ['username', 'email', 'first_name', 'last_name']
+        for field, value in data.items():
+            if field == "password":
+                try:
+                    user_to_update.set_password(value)
+                except (ValueError, ValidationError) as e:
+                    return JsonResponse({"error": str(e)}, status=400)
+            elif field in allowed_fields:
+                setattr(user_to_update, field, value)
+            else:
+                return JsonResponse({"error": f"There is no field named {field} in the user model."}, status=400)
+
+        user_to_update.save()
+        return JsonResponse({"success": True}, status=200)
+
+    except User.DoesNotExist:
+        return JsonResponse({"error": "User does not exist."}, status=404)
+
+@login_required
+@require_http_methods(["GET"])
+def list_orders_placed_by_user(request):
+    try:
+        orders_placed_by_user = Order.objects.filter(user=request.user)
+        orders_data = [order.to_dict() for order in orders_placed_by_user]
+        return JsonResponse({'orders': orders_data}, safe=False, status=200)
+    except Order.DoesNotExist:
+        return JsonResponse({"error": "No orders found for the user."}, status=404)
+
 
 
 @login_required
@@ -339,7 +401,9 @@ def get_category_by_name(request, category_name):
 
 
 
-"""SEARCH AND FILTERS MANAGEMENT"""
+"""
+SEARCH AND FILTERS MANAGEMENT
+"""
 
 @require_http_methods(["POST", "GET"])
 def search_products_categories_and_collections(request):
@@ -361,7 +425,7 @@ def search_products_categories_and_collections(request):
         # Get all related products
         product_results = Product.objects.filter(category__in=categories).select_related('category').order_by('name')
     else:
-        # If no collections are found, proceed with the usual search
+        # If no collections are found, proceed with the search
         product_results = Product.objects.filter(
             Q(name__icontains=search_term) | Q(description__icontains=search_term)
         ).select_related('category').order_by('name')
@@ -461,3 +525,4 @@ def apply_filters_to_search_results(request):
         return JsonResponse(filtered_results_json, safe=False)
     else:
         return JsonResponse({"error": "No search results found in session."}, status=404)
+

@@ -38,13 +38,18 @@ from django.contrib import messages
 
 
 
+
 """
 Decorator to render the homepage (LANDING PAGE)
 """
 @require_http_methods(["GET"])
 def index(request):
-    return render(request, 'marketplace/index.html')
-
+    if settings.DEBUG:
+        # Redirect to React's development server
+        return HttpResponseRedirect('http://localhost:3000/home')
+    else:
+        # In production, serve the built React app
+        return render(request, 'marketplace/index.html')
 
 
 """"
@@ -525,4 +530,5 @@ def apply_filters_to_search_results(request):
         return JsonResponse(filtered_results_json, safe=False)
     else:
         return JsonResponse({"error": "No search results found in session."}, status=404)
+
 

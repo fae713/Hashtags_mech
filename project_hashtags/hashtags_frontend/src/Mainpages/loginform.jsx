@@ -1,5 +1,4 @@
 import React, { useState, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
 
 const LoginForm = () => {
   const [formData, setFormData] = useState({
@@ -8,22 +7,21 @@ const LoginForm = () => {
   });
 
   const [errors, setErrors] = useState({});
-  const [csrfToken, setCsrfToken] = useState(''); // Initialize CSRF token state
-  const navigate = useNavigate();
+  const [csrfToken, setCsrfToken] = useState('');
 
   useEffect(() => {
     // Fetch the CSRF token from a Django endpoint
     const fetchCsrfToken = async () => {
       try {
-        const response = await fetch('/get-csrf-token/'); // Adjust the URL to match your Django endpoint
+        const response = await fetch('/get-csrf-token/');
         const data = await response.json();
-        setCsrfToken(data.csrfToken); // Assuming the endpoint returns { csrfToken: 'token_value' }
+        setCsrfToken(data.csrfToken);
       } catch (error) {
         console.error("Error fetching CSRF token:", error);
       }
     };
 
-    fetchCsrfToken(); // Call the function here
+    fetchCsrfToken();
   }, []);
 
   const handleChange = (e) => {
@@ -41,13 +39,13 @@ const LoginForm = () => {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
-          'X-CSRFToken': csrfToken, // Include the CSRF token in the request headers
+          'X-CSRFToken': csrfToken,
         },
         body: JSON.stringify(formData),
       });
 
       if (response.ok) {
-        navigate('/home'); // Adjust the path as needed
+        window.location.href = '/home';  // Refresh the page and navigate to /home
       } else {
         const errorData = await response.json();
         setErrors(errorData);

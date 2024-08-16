@@ -12,22 +12,21 @@ const RegisterForm = () => {
   });
 
   const [errors, setErrors] = useState({});
-  const [csrfToken, setCsrfToken] = useState(''); // Initialize CSRF token state
+  const [csrfToken, setCsrfToken] = useState('');
   const navigate = useNavigate();
 
   useEffect(() => {
-    // Fetch the CSRF token from a Django endpoint
     const fetchCsrfToken = async () => {
       try {
-        const response = await fetch('/get-csrf-token/'); // Adjust the URL to match your Django endpoint
+        const response = await fetch('/get-csrf-token/');
         const data = await response.json();
-        setCsrfToken(data.csrfToken); // Assuming the endpoint returns { csrfToken: 'token_value' }
+        setCsrfToken(data.csrfToken);
       } catch (error) {
         console.error("Error fetching CSRF token:", error);
       }
     };
 
-    fetchCsrfToken(); // Call the function here
+    fetchCsrfToken();
   }, []);
 
   const handleChange = (e) => {
@@ -43,19 +42,36 @@ const RegisterForm = () => {
       setErrors({ password2: "Passwords don't match." });
       return;
     }
-
+  
     try {
       const response = await fetch('/register/submit/', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
-          'X-CSRFToken': csrfToken, // Include the CSRF token in the request headers
+          'X-CSRFToken': csrfToken,
         },
         body: JSON.stringify(formData),
       });
-
+  
       if (response.ok) {
-        navigate('/home'); // Redirect to login on successful registration
+        const loginResponse = await fetch('/ajax_login/', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'X-CSRFToken': csrfToken,
+          },
+          body: JSON.stringify({
+            username: formData.username,
+            password: formData.password,
+          }),
+        });
+  
+        if (loginResponse.ok) {
+          navigate('/');
+          window.location.reload();
+        } else {
+          setErrors({ general: "Login failed after registration." });
+        }
       } else {
         const errorData = await response.json();
         setErrors(errorData);
@@ -65,6 +81,7 @@ const RegisterForm = () => {
       setErrors({ general: "An unexpected error occurred." });
     }
   };
+  
 
   return (
     <div className="min-h-screen pb-14 flex flex-col items-center justify-center bg-gray-100">

@@ -744,4 +744,3 @@ def clear_entire_shopping_cart(request):
         messages.error(request, f"User with ID: {user_id} does not have a cart.")
 
     return redirect('cart')
-

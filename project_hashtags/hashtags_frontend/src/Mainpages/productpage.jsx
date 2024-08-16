@@ -1,5 +1,4 @@
 import React from 'react';
-import herosectionImage from '../Components/Assets/hero.png';
 import ButterflyHoodie from '../Components/Assets/butterfly hoodie.png';
 import ButterflyJacket from '../Components/Assets/butterfly jacket.png';
 import ButterflyShirt from '../Components/Assets/butterfly shirt.png';
@@ -8,42 +7,50 @@ import WildThoughtHoodie from '../Components/Assets/wildthought hoodie.png';
 import Button from '../Components/button';
 import { FaStar } from "react-icons/fa";
 
-const Herosection = () => {
-  return (
-    <div 
-      className="w-full h-[600px] md:h-[800px] bg-cover bg-center bg-no-repeat" 
-      style={{ backgroundImage: `url(${herosectionImage})` }}
-    >
-      <div className='flex flex-col items-start justify-center h-full mx-5 md:mx-10'>
-        <h1 
-          className="text-white"
-          style={{
-            fontFamily: "'Irish Grover', sans-serif",
-            fontSize: 'clamp(100px, 20vw, 280px)', 
-            lineHeight: '1',
-            marginTop: '10px', 
-          }}
-        >
-          Hashtags
-        </h1>
 
-        <p 
-          className="text-white mt-8"
-          style={{
-            fontSize: 'clamp(10px, 3.5vw, 18px)', 
-            lineHeight: '32px',
-            whiteSpace: 'pre-line', 
-          }}
-        >
-          Explore our latest arrivals and discover the perfect outfit{'\n'}
-          that speaks to your individuality.{'\n'}
-        </p>
-      </div>
+const Productsection = () => {
+  return (
+    <div className="w-full h-[600px] md:h-[800px] bg-white">
+        <div className='flex flex-row justify-center items-center h-full mx-5 md:mx-10'>
+            {/* Image Part */}
+            <div className=' h-[70%] mr-10'>
+                <img src={ButterflyHoodie} alt="Butterfly Hoodie" className="p-10 mx-auto h-full object-cover" />
+            </div>
+
+            {/* Text Part */}
+            <div className='flex-1 pl-10'>
+                    <h1 className="text-black mb-4" style={{ fontFamily: "'Irish Grover', sans-serif", fontSize: 'clamp(50px, 3vw, 70px)' }}>
+                        Butterfly Hoodie
+                    </h1>
+
+                    <p className="text-black mb-8" style={{ fontSize: 'clamp(14px, 2vw, 20px)', lineHeight: '28px' }}>
+                        ₦187,340
+                    </p>
+
+                    <div className='flex items-center mb-8'>
+                        {[1, 2, 3, 4].map((_, starIndex) => (
+                        <FaStar key={starIndex} color='#FFD700' fontSize={18}/>
+                        ))}
+                    </div>
+
+                    <p className="text-black" style={{ fontSize: 'clamp(14px, 2vw, 20px)', lineHeight: '28px' }}>
+                        Dummy description goes here. Explore our latest arrivals and discover the perfect outfit that speaks to your individuality.
+                    </p>
+
+                    <div className="flex flex-colr">
+                        <Button 
+                            className="my-10 text-sm py-[7px] px-4 border-2 text-center border-purple-700 text-purple-700 hover:bg-purple-700 hover:text-white rounded-lg w-[50%]"
+                            onClick={() => alert('Added to Cart!')}>
+                            Add to Cart
+                        </Button>
+                    </div>
+            </div>
+        </div>
     </div>
   );
 }
 
-const Bestsellers = () => {
+const RelatedProducts = () => {
   const products = [
     {
       name: "Butterfly T-shirt",
@@ -74,7 +81,7 @@ const Bestsellers = () => {
 
   return (
     <div className='flex flex-col items-center h-auto mx-auto mt-12 md:mt-20 px-5 md:px-10'> 
-      <h1 className='mt-7 text-2xl md:text-3xl lg:text-3xl font-semibold text-black-700'>Best Sellers</h1>
+      <h1 className='mt-7 text-2xl md:text-3xl lg:text-3xl font-semibold text-black-700'>Related Products</h1>
       <div className='grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-8 p-10 mt-5 md:mt-10'>
         {products.map((product, index) => (
           <div key={index} className="bg-white overflow-hidden">
@@ -99,35 +106,17 @@ const Bestsellers = () => {
           </div>
         ))}
       </div>
-      <Button className="mt-5 md:mt-10 text-lg items-center h-full w-80 bg-purple-700 text-white hover:bg-purple-800" onClick={() => alert('View Marketplace clicked!')}>
-        View Marketplace
-      </Button>
     </div>
   )
 }
 
-const Gallery = () => {
-  return (
-    <div className='flex flex-col justify-between items-center mt-24 px-5 md:px-10'>
-      <h1 className='mt-7 text-2xl md:text-3xl lg:text-3xl font-semibold text-purple-700'>Our Gallery</h1>
-      <p className='mt-5 md:mt-10 text-center text-lg md:text-xl font-semibold'>
-        To feature on our gallery, take the best pictures with our wears, upload it on any social media with the hashtag 
-        <span className='font-bold text-purple-700'> #TrendwithHashtagsMech</span>
-      </p>
-      <div className='grid grid-cols-1 sm:grid-cols-1 md:grid-cols-2 gap-6 p-10'>
-        <div></div>
-        <div></div>
-      </div>
-    </div>
-  )
-}
+
 
 function HomePage() {
   return (
     <div>
-      <Herosection />
-      <Bestsellers />
-      <Gallery />
+      <Productsection />
+      <RelatedProducts />
     </div>
   );
 }

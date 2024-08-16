@@ -11,6 +11,7 @@ from django.contrib.auth.forms import UserChangeForm
 from django.urls import reverse_lazy
 from django.views.generic.edit import UpdateView
 from django.contrib.auth import update_session_auth_hash
+from django.utils.decorators import method_decorator
 
 
 from django.contrib.auth import authenticate, login, logout
@@ -35,7 +36,13 @@ from django.core import serializers
 from django.core.serializers import serialize
 from django.forms.models import model_to_dict
 from django.contrib import messages
-
+from django.views import View
+from rest_framework.decorators import api_view
+from rest_framework.response import Response
+from django.middleware.csrf import get_token
+from django.views.generic.edit import FormView
+from django.contrib.auth.forms import AuthenticationForm
+import logging, json
 
 
 
@@ -57,33 +64,90 @@ USER MANAGEMENT
 """
 @require_http_methods(["POST"])
 def register(request):
-    form = UserRegistrationForm(request.POST)
-    
-    if form.is_valid():
+    try:
+        data = json.loads(request.body)  # Parse the JSON data
+
+        # Create a form instance with the JSON data
+        form = UserRegistrationForm(data)
+        
+        if form.is_valid():
+            try:
+                # Save the new user
+                new_user = form.save(commit=False)
+                new_user.set_password(form.cleaned_data['password'])
+                new_user.save()
+
+                # Create a shopping cart for the new user
+                user_cart = ShoppingCart(user=new_user)
+                user_cart.save()
+
+                return JsonResponse({"message": "User created successfully"}, status=201)
+
+            except IntegrityError:
+                return JsonResponse({"error": "Username or email already exists"}, status=409)
+
+        else:
+            errors = form.errors.as_json()
+            return JsonResponse({"error": errors}, status=400)
+
+    except json.JSONDecodeError:
+        return JsonResponse({"error": "Invalid JSON data"}, status=400)
+
+"""class LoginView(FormView):
+    template_name = 'marketplace/registration/login.html'
+    form_class = AuthenticationForm
+
+    @method_decorator(csrf_exempt)
+    def dispatch(self, *args, **kwargs):
+        return super().dispatch(*args, **kwargs)
+
+    def post(self, request, *args, **kwargs):
+        form = self.get_form()
+        if form.is_valid():
+            username = form.cleaned_data.get('username')
+            password = form.cleaned_data.get('password')
+            user = authenticate(username=username, password=password)
+            if user is not None:
+                login(request, user)
+                return redirect('home')  # Adjust the redirect URL as needed
+            else:
+                return JsonResponse({'error': 'Invalid login credentials.'}, status=400)
+        else:
+            return JsonResponse({'error': 'Invalid input.'}, status=400)
+    """
+
+logger = logging.getLogger(__name__)
+
+@method_decorator(csrf_exempt, name='dispatch')
+class AjaxLoginView(View):
+    def post(self, request, *args, **kwargs):
+        logger.info(f"Received POST request to ajax_login: {request.body}")
         try:
-            # Save the new user
-            new_user = form.save(commit=False)
-            new_user.set_password(form.cleaned_data['password'])
-            new_user.save()
-
-            # Create a shopping cart for the new user
-            user_cart = ShoppingCart(user=new_user)
-            user_cart.save()
-
-            return JsonResponse({"message": "User created successfully"}, status=201)
-
-        except IntegrityError:
-            return JsonResponse({"error": "Username or email already exists"}, status=409)
-
-    else:
-        errors = form.errors.as_json()
-        return JsonResponse({"error": errors}, status=400)
+            data = json.loads(request.body.decode('utf-8'))
+            username = data.get('username', '')
+            password = data.get('password', '')
+            
+            user = authenticate(request, username=username, password=password)
+            if user is not None:
+                login(request, user)
+                return JsonResponse({'status': 'success'})
+            else:
+                return JsonResponse({'status': 'error', 'message': 'Invalid login credentials'}, status=400)
+        except Exception as e:
+            logger.error(f"Error processing ajax login: {e}")
+            return JsonResponse({'status': 'error', 'message': 'An unexpected error occurred.'}, status=400)
 
 
-@require_http_methods(["GET"])
+"""@require_http_methods(["GET"])
 def register_form(request):
     form = UserRegistrationForm()
     return render(request, 'marketplace/registration/register.html', {'form': form})
+    """
+
+
+@api_view(['GET'])
+def get_csrf_token(request):
+    return Response({'csrfToken': get_token(request)})
 
 
 @login_required
@@ -98,7 +162,9 @@ def get_user_profile(request):
         'first_name': specific_user.first_name,
         'last_name': specific_user.last_name,
     }
-    return render(request, 'store/userprofile.html', {'user': user_details})
+    if request.headers.get('Accept') == 'application/json':
+        return JsonResponse({'user': user_details})
+    return render(request, 'marketplace/registration/profile.html', {'user': user_details})
 
 @login_required
 @require_http_methods(["PUT"])
@@ -141,7 +207,7 @@ def list_orders_placed_by_user(request):
 
 
 
-@login_required
+"""@login_required
 def profile_view(request):
     if request.method == 'POST':
         form = UserChangeForm(request.POST, instance=request.user)
@@ -152,6 +218,25 @@ def profile_view(request):
     else:
         form = UserChangeForm(instance=request.user)
     return render(request, 'marketplace/registration/profile.html', {'form': form})
+    """
+
+
+class UserStatusView(View):
+    def get(self, request, *args, **kwargs):
+        if not request.user.is_authenticated:
+            return JsonResponse({'isAuthenticated': False}, status=200)
+        
+        user = request.user
+        user_status = {
+            'id': user.id,
+            'username': user.username,
+            'email': user.email,
+            'is_active': user.is_active,
+            'date_joined': user.date_joined.strftime('%Y-%m-%d %H:%M:%S'),
+            'last_login': user.last_login.strftime('%Y-%m-%d %H:%M:%S') if user.last_login else None,
+            'isAuthenticated': True
+        }
+        return JsonResponse(user_status, safe=False)
 
 
 """
@@ -531,4 +616,132 @@ def apply_filters_to_search_results(request):
     else:
         return JsonResponse({"error": "No search results found in session."}, status=404)
 
+
+"""
+SHOPPING CART MANAGEMENT
+"""
+@csrf_exempt
+@login_required
+@require_http_methods(["GET"])
+def get_user_shopping_cart_contents(request):
+    try:
+        user_id = request.user.id
+        cart_contents = ShoppingCart.objects.get(user=user_id)
+        cart_items = CartItem.objects.filter(cart=cart_contents)
+        # Calculate total price for each item here
+        for item in cart_items:
+            item.total_price = item.product.price * item.quantity
+        total_amount = sum(item.total_price for item in cart_items)
+        print("Total Amount:", total_amount)
+        return render(request, 'cart.html', {
+            'cart_items': cart_items,
+            'total_amount': total_amount,
+            'cart_item_count': cart_items.count()
+        })
+    except ShoppingCart.DoesNotExist:
+        return render(request, 'cart.html', {
+            'cart_items': [],
+            'total_amount': 0,
+            'cart_item_count': 0
+        })
+
+
+@csrf_exempt
+@require_http_methods(["GET"])
+def get_cart_item_count(request):
+    try:
+        user_id = request.user.id
+        cart_contents = ShoppingCart.objects.get(user=user_id)
+        cart_items = CartItem.objects.filter(cart=cart_contents)
+        cart_item_count = cart_items.count()
+        return JsonResponse({'cart_item_count': cart_item_count})
+    except ShoppingCart.DoesNotExist:
+        return JsonResponse({'cart_item_count': 0})
+
+
+@login_required
+@csrf_exempt
+@require_http_methods(["POST"])
+def add_product_to_cart(request, productId):
+    try:
+        user_id = request.user.id
+        quantity = int(request.POST['quantity'])
+
+        product = Product.objects.get(product_id=productId)
+        if quantity > product.quantity_in_stock:
+            messages.error(request, f"Please reduce the quantity to {product.quantity_in_stock} or less, as the current stock is {quantity} items.")
+            return redirect('cart') # Redirect back to the cart page with an error message
+
+        try:
+            # Try to get an existing cart item
+            existing_cart_item = CartItem.objects.get(cart=ShoppingCart.objects.get(user=user_id), product=product)
+            existing_cart_item.quantity += quantity
+            existing_cart_item.save()
+            messages.success(request, f"Updated quantity of {product.name} in your cart.")
+        except CartItem.DoesNotExist:
+            # If no existing cart item, create a new one
+            try:
+                cart = ShoppingCart.objects.get(user=user_id)
+            except ShoppingCart.DoesNotExist:
+                # If no shopping cart exists, create one
+                cart = ShoppingCart(user=User.objects.get(id=user_id))
+                cart.save()
+            new_cart_item = CartItem(cart=cart, product=product, quantity=quantity)
+            new_cart_item.save()
+            messages.success(request, f"{product.name} added to your cart.")
+
+        return redirect('cart') # Redirect to the cart page
+
+    except Product.DoesNotExist:
+        messages.error(request, f"Product with ID: {productId} not found.")
+        return redirect('cart') # Redirect back to the cart page with an error message
+    except MultiValueDictKeyError as e:
+        messages.error(request, f"The form value for attribute {str(e)} is missing.")
+        return redirect('cart') # Redirect back to the cart page with an error message
+
+@csrf_exempt
+@login_required
+@csrf_exempt
+@require_http_methods(["DELETE"])
+def remove_product_from_user_cart(request, productId):
+    try:
+        user_id = request.user.id
+        cart_item_to_delete = CartItem.objects.get(cart=ShoppingCart.objects.get(user=user_id), product=Product.objects.get(product_id=productId))
+
+
+        cart_item_to_delete.delete()
+
+        messages.success(request, "Item removed from cart.")
+
+    except ShoppingCart.DoesNotExist:
+        messages.error(request, f"User with ID: {user_id} does not have an active cart.")
+
+    except Product.DoesNotExist:
+        messages.error(request, f"Product with ID: {productId} not found in cart.")
+
+    except CartItem.DoesNotExist:
+        messages.error(request, f"CartItem does not exist.")
+
+    return redirect('cart')
+
+
+@csrf_exempt
+@login_required
+@require_http_methods(["DELETE", "POST"])
+def clear_entire_shopping_cart(request):
+    try:
+        user_id = request.user.id
+
+        cart_to_clear = ShoppingCart.objects.get(user=user_id)
+
+        cart_to_clear_items = CartItem.objects.filter(cart=cart_to_clear)
+
+        cart_to_clear_items.delete()
+
+        messages.success(request, "Cart cleared.")
+
+    except ShoppingCart.DoesNotExist:
+        messages.error(request, f"User with ID: {user_id} does not have a cart.")
+
+    return redirect('cart')
 

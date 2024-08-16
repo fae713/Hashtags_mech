@@ -48,16 +48,20 @@ INSTALLED_APPS = [
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
-    'corsheaders.middleware.CorsMiddleware', # CORS middleware, ADDED THIS!!!!
+    #'marketplace.middleware.CsrfExemptMiddleware',  # Custom middleware made to exempt csrf
+    #'rest_framework.middleware.csrf.CsrfViewMiddleware' #Added this
+    'corsheaders.middleware.CorsMiddleware',  # CORS middleware
     'django.middleware.common.CommonMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
-    'debug_toolbar.middleware.DebugToolbarMiddleware', # Remove before production
+    'debug_toolbar.middleware.DebugToolbarMiddleware',  # Remove before production
+    'whitenoise.middleware.WhiteNoiseMiddleware', # Added this
 ]
 
-# CORS_ORIGIN_ALLOW_ALL = True
+
+#CORS_ORIGIN_ALLOW_ALL = True
 # ADDED THIS
 CORS_ALLOW_CREDENTIALS = True
 CORS_ORIGIN_WHITELIST = (
@@ -167,3 +171,7 @@ EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
 LOGIN_REDIRECT_URL = '/'
 LOGOUT_REDIRECT_URL = '/'
 
+CSRF_TRUSTED_ORIGINS = ["http://localhost:8000/"]
+
+CSRF_COOKIE_HTTPONLY = True
+CSRF_COOKIE_SECURE = False  # Ensure this matches your environment (set to False in development)

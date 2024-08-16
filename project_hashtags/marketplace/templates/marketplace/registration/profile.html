@@ -1,20 +1,65 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>User Profile</title>
-    {% load static %}
-    <link rel="stylesheet" href="{% static 'marketplace/style.css' %}">
+    
+<head>  
 </head>
 <body>
-    <h2>User Profile</h2>
-    <form method="post">
-        {% csrf_token %}
-        {{ form.as_p }}
-        <button type="submit">Update Profile</button>
-    </form>
-    <p><a href="{% url 'password_change' %}">Change Password</a></p>
-    <p><a href="{% url 'index' %}">Back to home</a></p>
+<!-- Main content area for user profile -->
+<div class="container">
+    <!-- <div class="main">
+        <div class="topbar">
+            <a href="">Logout</a>
+            <a href="">Support</a>
+            <a href="">work</a>
+            <a href="">Home</a>
+        </div> -->
+        <div class="row">
+            <div class="col-md-4 mt-1">
+                <div class="carder text-center sidebar">
+                    <div class="carder-body">
+                        <i class="bi bi-person-circle" style="font-size: 150px" class="rounded-circle";></i>
+                        <div class="mt-3">
+                            <h3>{{ user.username }}</h3>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        <div class="col-md-8 mt-1">
+            <div class="carder mb-3 content">
+                <h1 style="color: goldenrod;" class="m-3 pt-3" >User Profile</h1>
+                <div class="carder-body">
+                    <div class="row">
+                        <div class="col-md-3">
+                            <h5>First Name</h5>
+                        </div>
+                        <div class="col-md-9 text-secondary">
+                            {{ user.first_name }}
+                        </div>
+                    </div>
+                    <hr>
+                    <div class="row">
+                        <div class="col-md-3">
+                            <h5>Last Name</h5>
+                        </div>
+                        <div class="col-md-9 text-secondary">
+                            {{ user.last_name }}
+                        </div>
+                    </div>
+                    <hr>
+                    <div class="row">
+                        <div class="col-md-3">
+                            <h5>Email</h5>
+                        </div>
+                        <div class="col-md-9 text-secondary">{{ user.email }}</div>
+                    </div>
+                    <hr>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        </div>
+    </div>
+</div>
 </body>
-</html>
+</html> 

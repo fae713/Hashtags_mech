@@ -168,7 +168,7 @@ class CartItem(models.Model):
     item_id = models.AutoField(primary_key=True)
     cart = models.ForeignKey(ShoppingCart, on_delete=models.CASCADE)
     product = models.ForeignKey(Product, on_delete=models.CASCADE)
-    quantity = models.PositiveIntegerField()
+    quantity = models.PositiveIntegerField(default=1)  # Ensure a default value or make sure it's always set
 
     def __str__(self):
         return f'Item ID: {self.item_id} - Product: {self.product.name} - Quantity: {self.quantity}'

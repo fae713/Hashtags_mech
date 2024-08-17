@@ -13,7 +13,7 @@ https://docs.djangoproject.com/en/5.1/ref/settings/
 from decouple import Config, RepositoryEnv
 from pathlib import Path
 import os
-
+import logging
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
@@ -28,6 +28,29 @@ SECRET_KEY = 'django-insecure-v=ah@u$im%f3h%1wl*dhnee=r&!o7p@dzka$!uh-8&#)sr1cfe
 DEBUG = True
 
 ALLOWED_HOSTS = []
+
+
+#logging
+"""
+LOGGING = {
+    'version': 1,
+    'disable_existing_loggers': False,
+    'handlers': {
+        'file': {
+            'level': 'DEBUG',
+            'class': 'logging.FileHandler',
+            'filename': 'debug.log',
+        },
+    },
+    'loggers': {
+        'django': {
+            'handlers': ['file'],
+            'level': 'DEBUG',
+            'propagate': True,
+        },
+    },
+}
+"""
 
 
 # Application definition

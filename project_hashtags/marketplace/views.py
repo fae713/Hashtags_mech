@@ -93,28 +93,6 @@ def register(request):
     except json.JSONDecodeError:
         return JsonResponse({"error": "Invalid JSON data"}, status=400)
 
-"""class LoginView(FormView):
-    template_name = 'marketplace/registration/login.html'
-    form_class = AuthenticationForm
-
-    @method_decorator(csrf_exempt)
-    def dispatch(self, *args, **kwargs):
-        return super().dispatch(*args, **kwargs)
-
-    def post(self, request, *args, **kwargs):
-        form = self.get_form()
-        if form.is_valid():
-            username = form.cleaned_data.get('username')
-            password = form.cleaned_data.get('password')
-            user = authenticate(username=username, password=password)
-            if user is not None:
-                login(request, user)
-                return redirect('home')  # Adjust the redirect URL as needed
-            else:
-                return JsonResponse({'error': 'Invalid login credentials.'}, status=400)
-        else:
-            return JsonResponse({'error': 'Invalid input.'}, status=400)
-    """
 
 logger = logging.getLogger(__name__)
 
@@ -620,127 +598,131 @@ def apply_filters_to_search_results(request):
 """
 SHOPPING CART MANAGEMENT
 """
-@csrf_exempt
 @login_required
 @require_http_methods(["GET"])
 def get_user_shopping_cart_contents(request):
     try:
         user_id = request.user.id
-        cart_contents = ShoppingCart.objects.get(user=user_id)
-        cart_items = CartItem.objects.filter(cart=cart_contents)
-        # Calculate total price for each item here
+        cart = ShoppingCart.objects.get(user=user_id)
+        print(f"Cart ID: {cart.cart_id}")
+
+        cart_items = CartItem.objects.filter(cart=cart)
+        print(f"Cart Items: {cart_items}")
+
+        cart_items_data = []
+        total_amount = 0
+
         for item in cart_items:
-            item.total_price = item.product.price * item.quantity
-        total_amount = sum(item.total_price for item in cart_items)
-        print("Total Amount:", total_amount)
-        return render(request, 'cart.html', {
-            'cart_items': cart_items,
+            total_price = item.product.price * item.quantity
+            total_amount += total_price
+            cart_items_data.append({
+                'product': {
+                    'product_id': item.product.product_id,
+                    'name': item.product.name,
+                    'price': item.product.price,
+                },
+                'quantity': item.quantity,
+                'total_price': total_price,
+            })
+
+        return JsonResponse({
+            'cart_items': cart_items_data,
             'total_amount': total_amount,
             'cart_item_count': cart_items.count()
         })
     except ShoppingCart.DoesNotExist:
-        return render(request, 'cart.html', {
+        return JsonResponse({
+            'cart_items': [],
+            'total_amount': 0,
+            'cart_item_count': 0
+        })
+    except Exception as e:
+        print(f"Error fetching cart contents: {str(e)}")
+        return JsonResponse({
             'cart_items': [],
             'total_amount': 0,
             'cart_item_count': 0
         })
 
 
-@csrf_exempt
-@require_http_methods(["GET"])
-def get_cart_item_count(request):
-    try:
-        user_id = request.user.id
-        cart_contents = ShoppingCart.objects.get(user=user_id)
-        cart_items = CartItem.objects.filter(cart=cart_contents)
-        cart_item_count = cart_items.count()
-        return JsonResponse({'cart_item_count': cart_item_count})
-    except ShoppingCart.DoesNotExist:
-        return JsonResponse({'cart_item_count': 0})
-
 
 @login_required
-@csrf_exempt
 @require_http_methods(["POST"])
 def add_product_to_cart(request, productId):
     try:
         user_id = request.user.id
-        quantity = int(request.POST['quantity'])
+        quantity = int(request.POST.get('quantity', 1))  # Default to 1 if quantity is not provided
 
+        # Fetch the product or return a 404 if it doesn't exist
         product = Product.objects.get(product_id=productId)
+
+        # Check if the requested quantity exceeds the available stock
         if quantity > product.quantity_in_stock:
-            messages.error(request, f"Please reduce the quantity to {product.quantity_in_stock} or less, as the current stock is {quantity} items.")
-            return redirect('cart') # Redirect back to the cart page with an error message
+            return JsonResponse(
+                {'success': False, 'error': f"Please reduce the quantity to {product.quantity_in_stock} or less, as the current stock is {product.quantity_in_stock} items."}, status=400)
 
-        try:
-            # Try to get an existing cart item
-            existing_cart_item = CartItem.objects.get(cart=ShoppingCart.objects.get(user=user_id), product=product)
-            existing_cart_item.quantity += quantity
-            existing_cart_item.save()
-            messages.success(request, f"Updated quantity of {product.name} in your cart.")
-        except CartItem.DoesNotExist:
-            # If no existing cart item, create a new one
-            try:
-                cart = ShoppingCart.objects.get(user=user_id)
-            except ShoppingCart.DoesNotExist:
-                # If no shopping cart exists, create one
-                cart = ShoppingCart(user=User.objects.get(id=user_id))
-                cart.save()
-            new_cart_item = CartItem(cart=cart, product=product, quantity=quantity)
-            new_cart_item.save()
-            messages.success(request, f"{product.name} added to your cart.")
+        # Get or create a shopping cart for the user
+        cart, created = ShoppingCart.objects.get_or_create(user=request.user)
 
-        return redirect('cart') # Redirect to the cart page
+        # Get or create the cart item
+        cart_item, created = CartItem.objects.get_or_create(cart=cart, product=product)
+        
+        # Always set the quantity before saving
+        if not created:
+            cart_item.quantity += quantity
+        else:
+            cart_item.quantity = quantity
+        
+        if cart_item.quantity is None:
+            cart_item.quantity = quantity
+
+        cart_item.save()
+
+        return JsonResponse({'success': True, 'cart_item_id': cart_item.item_id})
 
     except Product.DoesNotExist:
-        messages.error(request, f"Product with ID: {productId} not found.")
-        return redirect('cart') # Redirect back to the cart page with an error message
-    except MultiValueDictKeyError as e:
-        messages.error(request, f"The form value for attribute {str(e)} is missing.")
-        return redirect('cart') # Redirect back to the cart page with an error message
+        return JsonResponse({'success': False, 'error': f"Product with ID: {productId} not found."}, status=404)
+    except ValueError:
+        return JsonResponse({'success': False, 'error': "Invalid quantity. Please enter a valid number."}, status=400)
+    except Exception as e:
+        # Log the detailed error message for debugging purposes
+        import traceback
+        traceback.print_exc()
+        return JsonResponse({'success': False, 'error': f"An unexpected error occurred: {str(e)}"}, status=500)
 
-@csrf_exempt
 @login_required
-@csrf_exempt
 @require_http_methods(["DELETE"])
 def remove_product_from_user_cart(request, productId):
     try:
         user_id = request.user.id
-        cart_item_to_delete = CartItem.objects.get(cart=ShoppingCart.objects.get(user=user_id), product=Product.objects.get(product_id=productId))
-
-
+        cart = ShoppingCart.objects.get(user=user_id, status='active')
+        cart_item_to_delete = CartItem.objects.get(cart=cart, product_id=productId)
+        
         cart_item_to_delete.delete()
-
-        messages.success(request, "Item removed from cart.")
-
+        
+        return JsonResponse({'message': 'Item removed from cart.'}, status=200)
+    
     except ShoppingCart.DoesNotExist:
-        messages.error(request, f"User with ID: {user_id} does not have an active cart.")
-
-    except Product.DoesNotExist:
-        messages.error(request, f"Product with ID: {productId} not found in cart.")
-
+        return JsonResponse({'error': f'User with ID: {user_id} does not have an active cart.'}, status=404)
+    
     except CartItem.DoesNotExist:
-        messages.error(request, f"CartItem does not exist.")
+        return JsonResponse({'error': 'CartItem does not exist.'}, status=404)
+    
+    except Product.DoesNotExist:
+        return JsonResponse({'error': f'Product with ID: {productId} not found in cart.'}, status=404)
 
-    return redirect('cart')
 
-
-@csrf_exempt
 @login_required
 @require_http_methods(["DELETE", "POST"])
 def clear_entire_shopping_cart(request):
     try:
         user_id = request.user.id
+        cart = ShoppingCart.objects.get(user=user_id)
 
-        cart_to_clear = ShoppingCart.objects.get(user=user_id)
+        cart_items = CartItem.objects.filter(cart=cart)
+        cart_items.delete()
 
-        cart_to_clear_items = CartItem.objects.filter(cart=cart_to_clear)
-
-        cart_to_clear_items.delete()
-
-        messages.success(request, "Cart cleared.")
-
+        return JsonResponse({'message': 'Cart cleared successfully.'}, status=200)
+    
     except ShoppingCart.DoesNotExist:
-        messages.error(request, f"User with ID: {user_id} does not have a cart.")
-
-    return redirect('cart')
+        return JsonResponse({'error': f'User with ID: {user_id} does not have a cart.'}, status=404)

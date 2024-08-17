@@ -8,6 +8,7 @@ import MarketplacePage from './Mainpages/marketplace';
 import LoginForm from './Mainpages/loginform';
 import UserProfile from './Mainpages/userprofile';
 import ProductPage from './Mainpages/productpage';
+import CartPage from './Mainpages/usercart';
 //import ContactUs from './Mainpages/ContactUs';
 
 
@@ -23,6 +24,7 @@ function App() {
         <Route path="/login" element={<LoginForm />} />
         <Route path="/profile" element={<UserProfile />} />
         <Route path="/products/1" element={<ProductPage />} />
+        <Route path="/cart" element={<CartPage />} />
       </Routes>
       <Footer />
     </Router>

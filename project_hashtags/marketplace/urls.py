@@ -57,5 +57,12 @@ urlpatterns = [
     #SEARCH AND FILTERS MANAGEMENT
     path('search/', views.search_products_categories_and_collections, name='search-products-categories-collections'),
     path('search/filter/', views.apply_filters_to_search_results, name='apply-filters-to-search'),
+
+
+    # Shopping Cart
+    path('users/cart/', views.get_user_shopping_cart_contents, name='cart'),
+    path('users/cart/add/<int:productId>/', views.add_product_to_cart, name='add-product-to-cart'),
+    path('users/cart/remove/<int:productId>/', views.remove_product_from_user_cart, name='remove-product-from-cart'),
+    path('users/cart/clear/', views.clear_entire_shopping_cart, name='clear-cart'),
 ]
 

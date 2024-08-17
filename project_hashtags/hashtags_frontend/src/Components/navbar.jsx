@@ -60,8 +60,11 @@ const Navbar = () => {
         </ul>
         {/* navigation icons start here */}
         <div className='flex justify-between h-16 items-center px-0 text-white'>
-          <div className='mx-1 p-1 text-2xl md:text-xl stroke-2'><HiOutlineShoppingBag /></div>
-          <div className='mx-1 p-1 text-2xl md:text-xl stroke-2'><FiSearch onClick={toggleSearch}/></div>
+          {/* Shopping cart icon wrapped with Link component */}
+            <div className='mx-1 p-1 text-2xl md:text-xl stroke-2'>
+            <Link to="/cart"><HiOutlineShoppingBag /></Link>
+            </div>
+        <div className='mx-1 p-1 text-2xl md:text-xl stroke-2'><FiSearch onClick={toggleSearch}/></div>
 
           {searchOpen && (
             <div className="fixed inset-0 bg-black bg-opacity-50 flex">

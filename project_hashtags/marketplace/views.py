@@ -645,6 +645,17 @@ def get_user_shopping_cart_contents(request):
         })
 
 
+@require_http_methods(["GET"])
+def get_cart_item_count(request):
+    try:
+        user_id = request.user.id
+        cart_contents = ShoppingCart.objects.get(user=user_id)
+        cart_items = CartItem.objects.filter(cart=cart_contents)
+        cart_item_count = cart_items.count()
+        return JsonResponse({'cart_item_count': cart_item_count})
+    except ShoppingCart.DoesNotExist:
+        return JsonResponse({'cart_item_count': 0})
+
 
 @login_required
 @require_http_methods(["POST"])
@@ -658,8 +669,7 @@ def add_product_to_cart(request, productId):
 
         # Check if the requested quantity exceeds the available stock
         if quantity > product.quantity_in_stock:
-            return JsonResponse(
-                {'success': False, 'error': f"Please reduce the quantity to {product.quantity_in_stock} or less, as the current stock is {product.quantity_in_stock} items."}, status=400)
+            return JsonResponse({'success': False, 'error': f"Please reduce the quantity to {product.quantity_in_stock} or less, as the current stock is {product.quantity_in_stock} items."}, status=400)
 
         # Get or create a shopping cart for the user
         cart, created = ShoppingCart.objects.get_or_create(user=request.user)
@@ -726,3 +736,4 @@ def clear_entire_shopping_cart(request):
     
     except ShoppingCart.DoesNotExist:
         return JsonResponse({'error': f'User with ID: {user_id} does not have a cart.'}, status=404)
+

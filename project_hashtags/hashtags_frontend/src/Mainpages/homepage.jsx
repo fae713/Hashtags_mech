@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { Link } from 'react-router-dom';  // Import Link from react-router-dom
 import herosectionImage from '../Components/Assets/hero.png';
 import ButterflyHoodie from '../Components/Assets/butterfly hoodie.png';
 import ButterflyJacket from '../Components/Assets/butterfly jacket.png';
@@ -8,13 +9,15 @@ import WildThoughtHoodie from '../Components/Assets/wildthought hoodie.png';
 import Button from '../Components/button';
 import { FaStar } from "react-icons/fa";
 import axios from 'axios';
+import { useCart } from '../Components/cartcontext';
 
 const HomePage = () => {
   const [csrfToken, setCsrfToken] = useState('');
+  const [showPopup, setShowPopup] = useState(false);  // State for popup visibility
   const quantity = 1; // Set default quantity to 1
+  const { setCartItemCount } = useCart();  // Use the setCartItemCount from the CartContext
 
   useEffect(() => {
-    // Fetch the CSRF token from a Django endpoint
     const fetchCsrfToken = async () => {
       try {
         const response = await fetch('/get-csrf-token/');
@@ -41,12 +44,17 @@ const HomePage = () => {
     .then(response => {
       if (response.data.success) {
         console.log('Item added to cart:', response.data);
-        // Optionally update the state or perform other actions
-        // setCartItems(cartItems.map(item =>
-        //   item.product.product_id === productId
-        //     ? { ...item, quantity: item.quantity + quantity }
-        //     : item
-        // ));
+        setShowPopup(true);  
+        setTimeout(() => setShowPopup(false), 3000);  
+  
+        axios.get('/users/cart/item-count/')
+          .then(response => {
+            console.log('Fetched cart item count:', response.data.count);
+            setCartItemCount(response.data.count);  
+          })
+          .catch(error => {
+            console.error('Error fetching cart item count:', error);
+          });
       } else {
         console.error('Error adding item to cart:', response.data.error);
       }
@@ -54,8 +62,7 @@ const HomePage = () => {
     .catch(error => {
       console.error('Error adding item to cart:', error.response ? error.response.data : error);
     });
-  };
-  
+  };  
   
   const Herosection = () => {
     return (
@@ -133,10 +140,14 @@ const HomePage = () => {
           {products.map((product) => (
             <div key={product.id} className="bg-white overflow-hidden">
               <div className='bg-[#F2F2F2] p-5 flex flex-col items-center'>
-                <img className="w-full h-45 object-cover" src={product.image} alt={product.name} />
+                <Link to={`/products/${product.id}`}>  {/* Linking the product */}
+                  <img className="w-full h-45 object-cover" src={product.image} alt={product.name} />
+                </Link>
               </div>  
               <div className="py-5 px-4">
-                <h3 className="text-[16px] md:text-[20px] font-semibold text-gray-800">{product.name}</h3>
+                <Link to={`/products/${product.id}`} className="block">
+                  <h3 className="text-[16px] md:text-[20px] font-semibold text-gray-800 hover:text-blue-600 hover:underline transition-all duration-300">{product.name}</h3>
+                </Link>
                 <p className="text-[16px] md:text-[20px] font-semibold text-blue-700 pt-2">{product.price}</p>
                 <div className='flex pt-2'>
                   {[1, 2, 3, 4].map((_, starIndex) => (
@@ -181,6 +192,11 @@ const HomePage = () => {
       <Herosection />
       <Bestsellers />
       <Gallery />
+      {showPopup && (
+        <div className="fixed bottom-5 right-5 bg-green-500 text-white px-4 py-2 rounded-lg shadow-lg">
+          Successfully added to cart!
+        </div>
+      )}
     </div>
   );
 }

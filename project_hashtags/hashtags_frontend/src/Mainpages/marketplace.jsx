@@ -1,20 +1,82 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import ButterflyShirt from '../Components/Assets/butterfly hoodie.png';
 import { FaStar } from "react-icons/fa";
-import { HiOutlineSortAscending } from "react-icons/hi";
 import { MdOutlineArrowForwardIos } from "react-icons/md";
 import Button from '../Components/button';
+import axios from 'axios';
+import Navbar from '../Components/navbar'; 
+import { useCart } from '../Components/cartcontext';
+import { Link } from 'react-router-dom';
 
 const MarketplacePage = () => {
+  const [csrfToken, setCsrfToken] = useState('');
+  const [showPopup, setShowPopup] = useState(false);
+  const { setCartItemCount } = useCart();  // Use Cart Context
+
+  useEffect(() => {
+    const fetchCsrfToken = async () => {
+      try {
+        const response = await fetch('/get-csrf-token/');
+        const data = await response.json();
+        setCsrfToken(data.csrfToken);
+      } catch (error) {
+        console.error("Error fetching CSRF token:", error);
+      }
+    };
+
+    fetchCsrfToken();
+  }, []);
+
+  const addToCart = (productId) => {
+    const quantity = 1;
+
+    axios.post(`/users/cart/add/${productId}/`, 
+      { quantity }, 
+      {
+        headers: {
+          'Content-Type': 'application/json',
+          'X-CSRFToken': csrfToken,
+        }
+      }
+    )
+    .then(response => {
+      if (response.data.success) {
+        console.log('Item added to cart:', response.data);
+        setShowPopup(true);
+        setTimeout(() => setShowPopup(false), 3000);
+
+        // Fetch the updated cart item count
+        axios.get('/users/cart/item-count/')
+          .then(response => {
+            setCartItemCount(response.data.count);
+          })
+          .catch(error => {
+            console.error('Error fetching cart item count:', error);
+          });
+      } else {
+        console.error('Error adding item to cart:', response.data.error);
+      }
+    })
+    .catch(error => {
+      console.error('Error adding item to cart:', error.response ? error.response.data : error);
+    });
+  };
+
   return (
     <div>
+      <Navbar /> 
       <Navigationhistory />
       <div className='flex'>
         <SideNavbar />
-        <Productcards />
+        <Productcards addToCart={addToCart} />
       </div>
+      {showPopup && (
+        <div className="fixed bottom-5 right-5 bg-green-500 text-white px-4 py-2 rounded-lg shadow-lg">
+          Successfully added to cart!
+        </div>
+      )}
     </div>
-  )
+  );
 }
 
 const Navigationhistory = () => {
@@ -78,14 +140,18 @@ const SideNavbar = () => {
   )
 }
 
-const Productcard = ({ image, title, price }) => {
+const Productcard = ({ image, title, price, id, addToCart }) => {
   return (
     <div className="max-w-96 mx-auto md:max-w-sm bg-white overflow-hidden">
       <div className='bg-[#F2F2F2] p-5 md:p-10 w-full flex flex-col items-center'>
         <img className="w-full object-cover object-center" src={image} alt={title} />
       </div>  
       <div className="py-5 max-w-full">
-        <h3 className="text-[14px] md:text-[16px] font-semibold text-gray-800">{title}</h3>
+        <Link to={`/products/${id}`}>  {/* Linking the product */}
+          <h3 className="text-[14px] md:text-[16px] font-semibold text-gray-800 hover:text-blue-600 cursor-pointer">
+            {title}
+          </h3>
+        </Link>
         <p className="text-[14px] md:text-[16px] font-semibold text-blue-700 pt-2">{price}</p>
         <div className='flex pt-2'>
           <FaStar color='#FFD700' fontSize={18} />
@@ -95,7 +161,7 @@ const Productcard = ({ image, title, price }) => {
         </div>
         <Button 
           className="mt-3 text-sm py-[7px] px-4 border-2 border-purple-700 text-purple-700 hover:bg-purple-700 hover:text-white rounded-lg w-full"
-          onClick={() => alert('Added to Cart!')}
+          onClick={() => addToCart(id)}
         >
           Add to Cart
         </Button>
@@ -104,20 +170,19 @@ const Productcard = ({ image, title, price }) => {
   );
 };
 
-const Productcards = () => {
+const Productcards = ({ addToCart }) => {
   const [selectedCategory, setSelectedCategory] = useState('Collection');
 
   const Products = [
-    { image: ButterflyShirt, title: 'Butterfly T-shirt', price: '₦187,340', category: 'Butterfly' },
-    { image: ButterflyShirt, title: 'Wildthought Sweatshirt', price: '₦187,340', category: 'Wildthought' },
-    { image: ButterflyShirt, title: 'Butterfly Sweatshirt', price: '₦187,340', category: 'Butterfly' },
-    { image: ButterflyShirt, title: 'Wildthought T-shirt', price: '₦20,000', category: 'Wildthought' },
-    { image: ButterflyShirt, title: 'Wildthought T-shirt', price: '₦20,000', category: 'Wildthought' },
-    { image: ButterflyShirt, title: 'Wildthought T-shirt', price: '₦20,000', category: 'Wildthought' },
-    { image: ButterflyShirt, title: 'Wildthought T-shirt', price: '₦20,000', category: 'Wildthought' },
-    { image: ButterflyShirt, title: 'Wildthought T-shirt', price: '₦20,000', category: 'Wildthought' },
-    { image: ButterflyShirt, title: 'Wildthought T-shirt', price: '₦20,000', category: 'Wildthought' },
-    { image: ButterflyShirt, title: 'Wildthought T-shirt', price: '₦20,000', category: 'Wildthought' },
+    { id: 1, image: ButterflyShirt, title: 'Butterfly T-shirt', price: '₦187,340', category: 'Butterfly' },
+    { id: 2, image: ButterflyShirt, title: 'Wildthought Sweatshirt', price: '₦187,340', category: 'Wildthought' },
+    { id: 3, image: ButterflyShirt, title: 'Butterfly Sweatshirt', price: '₦187,340', category: 'Butterfly' },
+    { id: 4, image: ButterflyShirt, title: 'Wildthought T-shirt', price: '₦20,000', category: 'Wildthought' },
+    { id: 5, image: ButterflyShirt, title: 'Wildthought T-shirt', price: '₦20,000', category: 'Wildthought' },
+    { id: 6, image: ButterflyShirt, title: 'Wildthought T-shirt', price: '₦20,000', category: 'Wildthought' },
+    { id: 7, image: ButterflyShirt, title: 'Wildthought T-shirt', price: '₦20,000', category: 'Wildthought' },
+    { id: 8, image: ButterflyShirt, title: 'Wildthought T-shirt', price: '₦20,000', category: 'Wildthought' },
+    { id: 9, image: ButterflyShirt, title: 'Wildthought T-shirt', price: '₦20,000', category: 'Wildthought' },
   ];
 
   const filteredProducts = Products.filter(
@@ -126,34 +191,29 @@ const Productcards = () => {
 
   return (
     <div>
-      <select className='mt-5 ml-5'
+      <select 
+        className='mt-5 mb-5'
+        onChange={(e) => setSelectedCategory(e.target.value)}
         value={selectedCategory}
-        onChange={(e) => setSelectedCategory(e.target.value)}>
-        <option className='p-3' value="Collection">Collection</option>
-        <option className='p-3' value="Wildthought">Wildthought</option>
-        <option className='p-3' value="Butterfly">Butterfly</option>
-        <option className='p-3' value="Holy">Holy</option>
+      >
+        <option value="Collection">Collection</option>
+        <option value="Butterfly">Butterfly</option>
+        <option value="Wildthought">Wildthought</option>
       </select>
-
-      <div>
-        {<HiOutlineSortAscending />}
-      </div>
-
-      <div className='py-10 px-5 md:pr-10 mt-5 md:mt-10 mr-0 md:mr-10 min-w-auto w-full'>
-        <div className='grid grid-cols-2 sm:grid-cols-3 md:grid-cols-3 lg:grid-cols-4 gap-8'>
-          {filteredProducts.map((product, index) => (
-            <Productcard 
-              image={product.image} 
-              title={product.title} 
-              price={product.price} 
-              key={index} 
-            />
-          ))}
-        </div>
-        <p className='items-center text-center'>This is a nav button</p>
+      <div className='grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5 px-5 md:px-10'>
+        {filteredProducts.map((product) => (
+          <Productcard 
+            key={product.id} 
+            id={product.id}  // Pass the product ID here
+            image={product.image} 
+            title={product.title} 
+            price={product.price} 
+            addToCart={addToCart} 
+          />
+        ))}
       </div>
     </div>
   );
-};
+}
 
 export default MarketplacePage;

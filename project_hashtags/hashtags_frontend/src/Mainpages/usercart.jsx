@@ -106,7 +106,7 @@ const UserCart = () => {
 
   return (
     <div className="user-cart p-4">
-      <h1 className="text-xl sm:text-2xl font-bold mt-12 sm:mt-20 mb-4">Your Shopping Cart</h1>
+      <h1 className="text-xl sm:text-2xl font-bold mt-20 sm:mt-20 mb-4">Your Shopping Cart</h1>
       {cartItems.length === 0 ? (
         <div className="empty-cart text-center">Your cart is empty</div>
       ) : (
@@ -138,7 +138,7 @@ const UserCart = () => {
                         className="bg-blue-500 text-white px-3 py-1 rounded hover:bg-blue-600 w-full sm:w-auto"
                         onClick={() => addToCart(item.product.product_id)}
                       >
-                        Add More
+                        Add
                       </button>
                       <button
                         className="bg-yellow-500 text-white px-3 py-1 rounded hover:bg-yellow-600 w-full sm:w-auto"

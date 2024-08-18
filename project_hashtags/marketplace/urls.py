@@ -44,6 +44,7 @@ urlpatterns = [
     path('products/<int:id>/delete/', views.delete_product_by_id, name='delete-product'),
 
 
+
     #COLLECTION AND CATEGORY MANAGEMENT
     path('collections/', views.list_all_collections, name='list-all-collections'),
     path('categories/', views.get_list_of_all_product_categories, name='list-all-categories'),
@@ -64,5 +65,7 @@ urlpatterns = [
     path('users/cart/add/<int:productId>/', views.add_product_to_cart, name='add-product-to-cart'),
     path('users/cart/remove/<int:productId>/', views.remove_product_from_user_cart, name='remove-product-from-cart'),
     path('users/cart/clear/', views.clear_entire_shopping_cart, name='clear-cart'),
+    path('users/cart/item-count/', views.get_cart_item_count, name='get_cart_item_count'),
+    path('products/users/cart/item-count/', views.get_cart_item_count, name='get-cart_item_count'),
 ]
 

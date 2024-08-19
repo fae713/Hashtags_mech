@@ -39,12 +39,7 @@ Decorator to render the homepage (LANDING PAGE)
 """
 @require_http_methods(["GET"])
 def index(request):
-    if settings.DEBUG:
-        # Redirect to React's development server
-        return HttpResponseRedirect('http://localhost:3000/home')
-    else:
-        # In production, serve the built React app
-        return render(request, 'marketplace/index.html')
+    return render(request, 'index.html')
 
 
 """"

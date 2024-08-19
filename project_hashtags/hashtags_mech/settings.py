@@ -30,7 +30,7 @@ DEBUG = False
 ALLOWED_HOSTS = [
     'localhost',
     '127.0.0.1',
-    'https://hashtags-mech.onrender.com',
+    'hashtags-mech.onrender.com',
     ]
 
 
@@ -74,6 +74,7 @@ INSTALLED_APPS = [
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
+    'whitenoise.middleware.WhiteNoiseMiddleware', # Added this
     'django.middleware.csrf.CsrfViewMiddleware',
     #'marketplace.middleware.CsrfExemptMiddleware',  # Custom middleware made to exempt csrf
     #'rest_framework.middleware.csrf.CsrfViewMiddleware' #Added this
@@ -84,7 +85,6 @@ MIDDLEWARE = [
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
     #'debug_toolbar.middleware.DebugToolbarMiddleware',  # Remove before production
-    'whitenoise.middleware.WhiteNoiseMiddleware', # Added this
 ]
 
 

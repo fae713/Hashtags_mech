@@ -93,7 +93,8 @@ MIDDLEWARE = [
 CORS_ALLOW_CREDENTIALS = True
 CORS_ORIGIN_WHITELIST = (
     'http://127.0.0.1:8000',
-    'http://localhost:8000'
+    'http://localhost:8000',
+    'https://hashtags-mech.onrender.com/'
 )
 
 ROOT_URLCONF = 'hashtags_mech.urls'
@@ -197,10 +198,13 @@ EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
 #LOGIN REDIRECT
 # settings.py
 
-LOGIN_REDIRECT_URL = '/'
-LOGOUT_REDIRECT_URL = '/'
+#LOGIN_REDIRECT_URL = '/'
+#LOGOUT_REDIRECT_URL = '/'
 
 CSRF_TRUSTED_ORIGINS = ["http://localhost:8000/"]
 
 CSRF_COOKIE_HTTPONLY = True
 CSRF_COOKIE_SECURE = True  # Ensure this matches your environment (set to False in development)
+SESSION_COOKIE_SECURE = True
+SECURE_SSL_REDIRECT = True
+

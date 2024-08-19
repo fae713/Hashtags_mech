@@ -94,7 +94,6 @@ CORS_ALLOW_CREDENTIALS = True
 CORS_ORIGIN_WHITELIST = (
     'http://127.0.0.1:8000',
     'http://localhost:8000',
-    'https://hashtags-mech.onrender.com',
 )
 
 ROOT_URLCONF = 'hashtags_mech.urls'
@@ -103,7 +102,7 @@ ROOT_URLCONF = 'hashtags_mech.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [os.path.join(BASE_DIR, 'marketplace/templates')],
+        'DIRS': [os.path.join(BASE_DIR, 'hashtags_frontend', 'build')],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -166,6 +165,9 @@ USE_TZ = True
 
 STATIC_URL = 'static/'
 STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
+STATICFILES_DIRS = [
+    os.path.join(BASE_DIR, 'hashtags_frontend', 'build', 'static'),
+]
 
 STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
 
@@ -202,10 +204,10 @@ EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
 #LOGIN_REDIRECT_URL = '/'
 #LOGOUT_REDIRECT_URL = '/'
 
-CSRF_TRUSTED_ORIGINS = ["https://hashtags-mech.onrender.com"]
+#CSRF_TRUSTED_ORIGINS = ["https://hashtags-mech.onrender.com"]
 
-CSRF_COOKIE_HTTPONLY = True
+#CSRF_COOKIE_HTTPONLY = True
 CSRF_COOKIE_SECURE = True  # Ensure this matches your environment (set to False in development)
 SESSION_COOKIE_SECURE = True
-SECURE_SSL_REDIRECT = True
+#SECURE_SSL_REDIRECT = True
 

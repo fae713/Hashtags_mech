@@ -27,7 +27,11 @@ SECRET_KEY = 'django-insecure-v=ah@u$im%f3h%1wl*dhnee=r&!o7p@dzka$!uh-8&#)sr1cfe
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = False
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = [
+    'localhost',
+    '127.0.0.1',
+    'https://hashtags-mech.onrender.com/'
+    ]
 
 
 #logging

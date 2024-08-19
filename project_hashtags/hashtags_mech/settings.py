@@ -30,7 +30,7 @@ DEBUG = False
 ALLOWED_HOSTS = [
     'localhost',
     '127.0.0.1',
-    'https://hashtags-mech.onrender.com/'
+    'https://hashtags-mech.onrender.com',
     ]
 
 
@@ -94,7 +94,7 @@ CORS_ALLOW_CREDENTIALS = True
 CORS_ORIGIN_WHITELIST = (
     'http://127.0.0.1:8000',
     'http://localhost:8000',
-    'https://hashtags-mech.onrender.com/'
+    'https://hashtags-mech.onrender.com',
 )
 
 ROOT_URLCONF = 'hashtags_mech.urls'
@@ -176,7 +176,8 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 
 
-CSRF_TRUSTED_ORIGINS = ["http://localhost:8000/"]
+CSRF_TRUSTED_ORIGINS = ["http://localhost:8000"]
+
 # LOGIN_REDIRECT_URL = ''
 
 # EMAIL SMPT
@@ -201,7 +202,7 @@ EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
 #LOGIN_REDIRECT_URL = '/'
 #LOGOUT_REDIRECT_URL = '/'
 
-CSRF_TRUSTED_ORIGINS = ["http://localhost:8000/"]
+CSRF_TRUSTED_ORIGINS = ["https://hashtags-mech.onrender.com"]
 
 CSRF_COOKIE_HTTPONLY = True
 CSRF_COOKIE_SECURE = True  # Ensure this matches your environment (set to False in development)

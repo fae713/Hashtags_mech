@@ -1,1 +1,2 @@
-web: gunicorn hashtags_mech.wsgi --log-file -
+web: gunicorn project_hashtags.wsgi:application --log-file -
+

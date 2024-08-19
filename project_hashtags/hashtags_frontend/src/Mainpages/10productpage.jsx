@@ -6,10 +6,9 @@ import { useCart } from '../Components/cartcontext';
 import { Link } from 'react-router-dom';
 import product2 from '../Components/Assets/3shirt.png';
 import product3 from '../Components/Assets/sample.jpg';
-import product6 from '../Components/Assets/6hoodie.png';
 import product7 from '../Components/Assets/7hoodie.png';
 import product8 from '../Components/Assets/8shirt.png';
-
+import product10 from '../Components/Assets/butterfly hoodie.png';
 
 const ProductPage = () => {
   const [csrfToken, setCsrfToken] = useState('');
@@ -80,13 +79,13 @@ const Productsection = ({ csrfToken, handleAddToCart, showPopup }) => {
       <div className='flex flex-col md:flex-row justify-center items-center mx-5 md:mx-10'>
         {/* Image Part */}
         <div className='w-full md:w-1/2 p-5 md:p-10'>
-          <img src={product6} alt="Butterfly Hoodie" className="w-full h-auto object-cover" />
+          <img src={product10} alt="Butterfly Hoodie" className="w-full h-auto object-cover" />
         </div>
 
         {/* Text Part */}
         <div className='w-full md:w-1/2 p-5 md:p-10'>
           <h1 className="text-black mb-4" style={{ fontFamily: "'Irish Grover', sans-serif", fontSize: 'clamp(30px, 4vw, 50px)' }}>
-            Wild Thought 3-colors Hoodie
+            Butterfly Sweat-shirt
           </h1>
 
           <p className="text-black mb-8" style={{ fontSize: 'clamp(14px, 3vw, 20px)', lineHeight: '1.5' }}>
@@ -106,7 +105,7 @@ const Productsection = ({ csrfToken, handleAddToCart, showPopup }) => {
           <div className="flex flex-col mt-10">
             <Button 
               className="text-sm py-2 px-4 border-2 text-center border-purple-700 text-purple-700 hover:bg-purple-700 hover:text-white rounded-lg w-full md:w-1/2"
-              onClick={() => handleAddToCart(6)}>
+              onClick={() => handleAddToCart(10)}>
               Add to Cart
             </Button>
           </div>
@@ -157,7 +156,7 @@ const RelatedProducts = ({ csrfToken, handleAddToCart, showPopup }) => {
           <div key={product.id} className="bg-white overflow-hidden shadow-md rounded-lg">
             <div className='bg-[#F2F2F2] p-5 w-full flex flex-col items-center'>
               <img className="w-[250px] h-[250px] object-cover object-center" src={product.image} alt={product.name} />
-            </div>   
+            </div> 
             <div className="py-5 px-4">
               <Link to={`/products/${product.id}`}>
                 <h3 className="text-lg md:text-xl font-semibold text-gray-800 hover:text-blue-600 cursor-pointer">

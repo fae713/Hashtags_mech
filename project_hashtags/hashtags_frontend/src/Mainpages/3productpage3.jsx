@@ -1,14 +1,17 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
-import ButterflyHoodie from '../Components/Assets/butterfly hoodie.png';
-import ButterflyJacket from '../Components/Assets/butterfly jacket.png';
-import ButterflyShirt from '../Components/Assets/butterfly shirt.png';
-import WildThoughtJacket from '../Components/Assets/wild thought jacket.png';
-import WildThoughtHoodie from '../Components/Assets/wildthought hoodie.png';
 import Button from '../Components/button';
 import { FaStar } from "react-icons/fa";
 import { useCart } from '../Components/cartcontext';
 import { Link } from 'react-router-dom';
+
+
+import product1 from '../Components/Assets/2jacket.png';
+import product2 from '../Components/Assets/3shirt.png';
+import product3 from '../Components/Assets/sample.jpg';
+import product7 from '../Components/Assets/7hoodie.png';
+import product8 from '../Components/Assets/8shirt.png';
+
 
 const ProductPage = () => {
   const [csrfToken, setCsrfToken] = useState('');
@@ -79,17 +82,17 @@ const Productsection = ({ csrfToken, handleAddToCart, showPopup }) => {
       <div className='flex flex-col md:flex-row justify-center items-center mx-5 md:mx-10'>
         {/* Image Part */}
         <div className='w-full md:w-1/2 p-5 md:p-10'>
-          <img src={ButterflyHoodie} alt="Butterfly Hoodie" className="w-full h-auto object-cover" />
+          <img src={product3} alt="Butterfly Hoodie" className="w-full h-auto object-cover" />
         </div>
 
         {/* Text Part */}
         <div className='w-full md:w-1/2 p-5 md:p-10'>
           <h1 className="text-black mb-4" style={{ fontFamily: "'Irish Grover', sans-serif", fontSize: 'clamp(30px, 4vw, 50px)' }}>
-            Butterfly Hoodie
+            Butterfly Offwhite Shirt
           </h1>
 
           <p className="text-black mb-8" style={{ fontSize: 'clamp(14px, 3vw, 20px)', lineHeight: '1.5' }}>
-            ₦187,340
+            $421
           </p>
 
           <div className='flex items-center mb-8'>
@@ -123,34 +126,28 @@ const Productsection = ({ csrfToken, handleAddToCart, showPopup }) => {
 const RelatedProducts = ({ csrfToken, handleAddToCart, showPopup }) => {
   const products = [
     {
-      id: 1,
-      name: "Butterfly T-shirt",
-      price: "₦187,340",
-      image: ButterflyHoodie
-    },
-    {
       id: 2,
-      name: "Butterfly Jacket",
-      price: "₦150,000",
-      image: ButterflyJacket
-    },
-    {
-      id: 4,
       name: "Butterfly Shirt",
-      price: "₦120,000",
-      image: ButterflyShirt
+      price: "$130",
+      image: product2
     },
     {
-      id: 5,
-      name: "Wild Thought Jacket",
-      price: "₦200,000",
-      image: WildThoughtJacket
+      id: 1,
+      name: "Butterfly Jacket",
+      price: "$421",
+      image: product1
     },
     {
-      id: 6,
-      name: "Wild Thought Hoodie",
-      price: "₦180,000",
-      image: WildThoughtHoodie
+      id: 8,
+      name: "Butterfly Alien T-shirt",
+      price: "$300",
+      image: product8
+    },
+    {
+      id: 7,
+      name: "Wild Thought Shirt",
+      price: "$180",
+      image: product7
     },
   ];
 
@@ -160,9 +157,9 @@ const RelatedProducts = ({ csrfToken, handleAddToCart, showPopup }) => {
       <div className='grid grid-cols-2 gap-6 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4'>
         {products.map((product) => (
           <div key={product.id} className="bg-white overflow-hidden shadow-md rounded-lg">
-            <div className='bg-[#F2F2F2] p-5 flex flex-col items-center'>
-              <img className="w-full h-40 object-cover" src={product.image} alt={product.name} />
-            </div>  
+            <div className='bg-[#F2F2F2] p-5 w-full flex flex-col items-center'>
+              <img className="w-[250px] h-[250px] object-cover object-center" src={product.image} alt={product.name} />
+            </div> 
             <div className="py-5 px-4">
               <Link to={`/products/${product.id}`}>
                 <h3 className="text-lg md:text-xl font-semibold text-gray-800 hover:text-blue-600 cursor-pointer">

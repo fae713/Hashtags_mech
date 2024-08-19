@@ -1,5 +1,4 @@
 import React, { useState, useEffect } from 'react';
-import ButterflyShirt from '../Components/Assets/butterfly hoodie.png';
 import { FaStar } from "react-icons/fa";
 import { MdOutlineArrowForwardIos } from "react-icons/md";
 import Button from '../Components/button';
@@ -7,6 +6,15 @@ import axios from 'axios';
 import Navbar from '../Components/navbar'; 
 import { useCart } from '../Components/cartcontext';
 import { Link } from 'react-router-dom';
+import product1 from '../Components/Assets/2jacket.png';
+import product2 from '../Components/Assets/3shirt.png';
+import product3 from '../Components/Assets/sample.jpg';
+import product4 from '../Components/Assets/xample.jpg';
+import product5 from '../Components/Assets/5shirt.png';
+import product6 from '../Components/Assets/6hoodie.png';
+import product7 from '../Components/Assets/7hoodie.png';
+import product8 from '../Components/Assets/8shirt.png';
+import product9 from '../Components/Assets/9jacket.png';
 
 const MarketplacePage = () => {
   const [csrfToken, setCsrfToken] = useState('');
@@ -83,7 +91,7 @@ const Navigationhistory = () => {
   return (
     <div className='bg-[#ffff]'>
       <div className='mb-5 pt-20 flex px-5 md:px-10 pb-3 text-sm md:text-lg font-medium items-center border-b-[3px] border-solid border-gray-400'>
-        <h3 className='pl-0 pr-3 pt-2 text-gray-600'>Marketplace</h3>
+        <h3 className='pl-0 pr-3 pt-2 text-gray-600'>Store</h3>
         <div className='px-1 pt-2 text-gray-600 text-lg md:text-xl'><MdOutlineArrowForwardIos /></div>
         <h3 className='px-3 pt-2 text-gray-900'>All</h3>
       </div>
@@ -144,7 +152,7 @@ const Productcard = ({ image, title, price, id, addToCart }) => {
   return (
     <div className="max-w-96 mx-auto md:max-w-sm bg-white overflow-hidden">
       <div className='bg-[#F2F2F2] p-5 md:p-10 w-full flex flex-col items-center'>
-        <img className="w-full object-cover object-center" src={image} alt={title} />
+        <img className="w-[250px] h-[250px] object-cover object-center" src={image} alt={title} />
       </div>  
       <div className="py-5 max-w-full">
         <Link to={`/products/${id}`}>  {/* Linking the product */}
@@ -174,15 +182,15 @@ const Productcards = ({ addToCart }) => {
   const [selectedCategory, setSelectedCategory] = useState('Collection');
 
   const Products = [
-    { id: 1, image: ButterflyShirt, title: 'Butterfly T-shirt', price: '₦187,340', category: 'Butterfly' },
-    { id: 2, image: ButterflyShirt, title: 'Wildthought Sweatshirt', price: '₦187,340', category: 'Wildthought' },
-    { id: 3, image: ButterflyShirt, title: 'Butterfly Sweatshirt', price: '₦187,340', category: 'Butterfly' },
-    { id: 4, image: ButterflyShirt, title: 'Wildthought T-shirt', price: '₦20,000', category: 'Wildthought' },
-    { id: 5, image: ButterflyShirt, title: 'Wildthought T-shirt', price: '₦20,000', category: 'Butterfly' },
-    { id: 6, image: ButterflyShirt, title: 'Wildthought T-shirt', price: '₦20,000', category: 'Wildthought' },
-    { id: 7, image: ButterflyShirt, title: 'Wildthought T-shirt', price: '₦20,000', category: 'Wildthought' },
-    { id: 8, image: ButterflyShirt, title: 'Wildthought T-shirt', price: '₦20,000', category: 'Wildthought' },
-    { id: 9, image: ButterflyShirt, title: 'Wildthought T-shirt', price: '₦20,000', category: 'Butterfly' },
+    { id: 1, image: product1, title: 'Butterfly Jacket', price: '$250', category: 'Butterfly' },
+    { id: 2, image: product2, title: 'Butterfly Shirt', price: '$130', category: 'Butterfly' },
+    { id: 3, image: product3, title: 'Butterfly Offwhite Shirt', price: '$421', category: 'Butterfly' },
+    { id: 4, image: product4, title: 'Wild Thought offwhite Shirt', price: '$100', category: 'Wildthought' },
+    { id: 5, image: product5, title: 'Wild Thought Hoodie', price: '$75', category: 'Butterfly' },
+    { id: 6, image: product6, title: 'Wild Thought 3-colors Hoodie', price: '$250', category: 'Wildthought' },
+    { id: 7, image: product7, title: 'Wild Thought Shirt', price: '$180', category: 'Wildthought' },
+    { id: 8, image: product8, title: 'Butterfly Alien T-shirt', price: '$300', category: 'Butterfly' },
+    { id: 9, image: product9, title: 'Wild Thought Jacket', price: '$200', category: 'Wildthought' },
   ];
 
   const filteredProducts = Products.filter(

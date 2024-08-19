@@ -2,10 +2,10 @@ import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';  // Import Link from react-router-dom
 import herosectionImage from '../Components/Assets/hero.png';
 import ButterflyHoodie from '../Components/Assets/butterfly hoodie.png';
-import ButterflyJacket from '../Components/Assets/butterfly jacket.png';
 import ButterflyShirt from '../Components/Assets/butterfly shirt.png';
 import WildThoughtJacket from '../Components/Assets/wild thought jacket.png';
 import WildThoughtHoodie from '../Components/Assets/wildthought hoodie.png';
+import butter122 from '../Components/Assets/butterfly jacket.png';
 import Button from '../Components/button';
 import { FaStar } from "react-icons/fa";
 import axios from 'axios';
@@ -112,33 +112,33 @@ const HomePage = () => {
   const Bestsellers = () => {
     const products = [
       {
-        id: 1,
-        name: "Butterfly T-shirt",
-        price: "₦187,340",
+        id: 10,
+        name: "Butterfly Sweat-shirt",
+        price: "$250",
         image: ButterflyHoodie
       },
       {
         id: 2,
         name: "Butterfly Jacket",
-        price: "₦150,000",
-        image: ButterflyJacket
+        price: "$130",
+        image: butter122
       },
       {
         id: 3,
         name: "Butterfly Shirt",
-        price: "₦120,000",
+        price: "$421",
         image: ButterflyShirt
       },
       {
         id: 4,
         name: "Wild Thought Jacket",
-        price: "₦200,000",
+        price: "$100",
         image: WildThoughtJacket
       },
       {
         id: 5,
         name: "Wild Thought Hoodie",
-        price: "₦180,000",
+        price: "$75",
         image: WildThoughtHoodie
       },
     ];
@@ -149,9 +149,10 @@ const HomePage = () => {
         <div className='grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-8 p-10 mt-5 md:mt-10'>
           {products.map((product) => (
             <div key={product.id} className="bg-white overflow-hidden">
-              <div className='bg-[#F2F2F2] p-5 flex flex-col items-center'>
+              <div className='bg-[#F2F2F2] p-5 w-full flex flex-col items-center'>
                 <Link to={`/products/${product.id}`}>  {/* Linking the product */}
-                  <img className="w-full h-45 object-cover" src={product.image} alt={product.name} />
+                  <img className="w-[250px] h-[250px] object-cover object-center" src={product.image} alt={product.name} 
+                />
                 </Link>
               </div>  
               <div className="py-5 px-4">

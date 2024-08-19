@@ -42,6 +42,7 @@ urlpatterns = [
     path('products/create/', views.create_new_product, name='create-new-product'),
     path('products/<int:id>/update/', views.update_product_id_details, name='update-product-details'),
     path('products/<int:id>/delete/', views.delete_product_by_id, name='delete-product'),
+    #path('products/user/status/', views.UserStatusView.as_view(), name='user_status'),
 
 
 

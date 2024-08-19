@@ -22,7 +22,7 @@ const Footer = () => {
             <ul>
               <li className='py-3'><Link to="/home">Home</Link></li>
               <li className='py-3'><Link to="/store">Store</Link></li>
-              <li className='py-3'><Link to="/contact">Contact Us</Link></li>
+              <li className='py-3'><Link to="/contactus">Contact Us</Link></li>
             </ul>
           </div>
 

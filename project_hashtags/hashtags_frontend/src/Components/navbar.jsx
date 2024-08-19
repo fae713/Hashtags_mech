@@ -83,8 +83,8 @@ const Navbar = () => {
           <li className={`p-5 ${location.pathname === '/store' ? 'text-purple-500' : ''}`}>
             <Link to="/store">Store</Link>
           </li>
-          <li className={`p-5 ${location.pathname === '/contact' ? 'text-purple-500' : ''}`}>
-            <Link to="/contact">Contact Us</Link>
+          <li className={`p-5 ${location.pathname === '/contactus' ? 'text-purple-500' : ''}`}>
+            <Link to="/contactus">Contact Us</Link>
           </li>
         </ul>
         {/* navigation icons start here */}
@@ -146,7 +146,7 @@ const Navbar = () => {
             <li className={`p-5 ${location.pathname === '/store' ? 'text-purple-500' : ''}`}>
               <Link to="/store" onClick={handleNav}>STORE</Link>
             </li>
-            <li className={`p-5 ${location.pathname === '/contact' ? 'text-purple-500' : ''}`}>
+            <li className={`p-5 ${location.pathname === '/contactus' ? 'text-purple-500' : ''}`}>
               <Link to="/contact" onClick={handleNav}>CONTACT US</Link>
             </li>
           </ul>

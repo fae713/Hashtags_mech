@@ -25,7 +25,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = 'django-insecure-v=ah@u$im%f3h%1wl*dhnee=r&!o7p@dzka$!uh-8&#)sr1cfe'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = False
 
 ALLOWED_HOSTS = []
 
@@ -79,7 +79,7 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
-    'debug_toolbar.middleware.DebugToolbarMiddleware',  # Remove before production
+    #'debug_toolbar.middleware.DebugToolbarMiddleware',  # Remove before production
     'whitenoise.middleware.WhiteNoiseMiddleware', # Added this
 ]
 
@@ -160,7 +160,9 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/5.1/howto/static-files/
 
 STATIC_URL = 'static/'
+STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
 
+STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/dev/ref/settings/#default-auto-field
@@ -197,4 +199,4 @@ LOGOUT_REDIRECT_URL = '/'
 CSRF_TRUSTED_ORIGINS = ["http://localhost:8000/"]
 
 CSRF_COOKIE_HTTPONLY = True
-CSRF_COOKIE_SECURE = False  # Ensure this matches your environment (set to False in development)
+CSRF_COOKIE_SECURE = True  # Ensure this matches your environment (set to False in development)

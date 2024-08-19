@@ -1,47 +1,35 @@
 from django.views.decorators.http import require_http_methods
-from django.shortcuts import render, redirect
+from django.shortcuts import render
 from django.http import JsonResponse
 from django.core.exceptions import ValidationError
 from django.db import IntegrityError
 from django.contrib.auth.models import User
 from .models import ShoppingCart
 from .forms import UserRegistrationForm
-from django.shortcuts import render, redirect
+from django.shortcuts import render
 from django.contrib.auth.forms import UserChangeForm
 from django.urls import reverse_lazy
 from django.views.generic.edit import UpdateView
 from django.contrib.auth import update_session_auth_hash
 from django.utils.decorators import method_decorator
-
-
 from django.contrib.auth import authenticate, login, logout
-from django.db.models import F, ExpressionWrapper, fields, Sum, Q, FloatField
+from django.db.models import Q
 from django.db import IntegrityError, transaction
 from django.contrib.auth.decorators import login_required
-from django.shortcuts import render, get_object_or_404, redirect
 from django.views.decorators.http import require_http_methods
 from django.views.decorators.csrf import csrf_exempt
 from django.contrib.auth.models import User
 from django.core.paginator import Paginator, EmptyPage
 from django.conf import settings
-from django.urls import reverse
-from urllib.parse import quote_plus, urlencode
-from django.http import JsonResponse, HttpResponse, HttpResponseRedirect
-from django.http import HttpResponseNotFound, HttpResponseServerError, Http404
+from django.http import JsonResponse, HttpResponseRedirect
 from .models import Product, Category, Collection, Subcategory, Order, ShoppingCart, CartItem, Address, OrderItem
 from django.utils.datastructures import MultiValueDictKeyError
-from django.core.exceptions import ValidationError, MultipleObjectsReturned, PermissionDenied, ObjectDoesNotExist
+from django.core.exceptions import ValidationError
 from django.http import QueryDict
-from django.core import serializers
-from django.core.serializers import serialize
-from django.forms.models import model_to_dict
-from django.contrib import messages
 from django.views import View
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
 from django.middleware.csrf import get_token
-from django.views.generic.edit import FormView
-from django.contrib.auth.forms import AuthenticationForm
 import logging, json
 
 
@@ -185,7 +173,8 @@ def list_orders_placed_by_user(request):
 
 
 
-"""@login_required
+"""
+@login_required
 def profile_view(request):
     if request.method == 'POST':
         form = UserChangeForm(request.POST, instance=request.user)
@@ -736,4 +725,89 @@ def clear_entire_shopping_cart(request):
     
     except ShoppingCart.DoesNotExist:
         return JsonResponse({'error': f'User with ID: {user_id} does not have a cart.'}, status=404)
+
+
+"""
+THE START OF CHECKOUT VIEWS
+"""
+@login_required
+@require_http_methods(["GET"])
+def checkout(request):
+    try:
+        user_id = request.user.id
+        cart_contents = ShoppingCart.objects.get(user=user_id)
+        cart_items = CartItem.objects.filter(cart=cart_contents)
+        
+        # Calculate total price for each item
+        items = []
+        for item in cart_items:
+            total_price = item.product.price * item.quantity
+            items.append({
+                'id': item.item_id,
+                'product_name': item.product.name,
+                'price': str(item.product.price),  # Convert price to string to handle decimal precision
+                'quantity': item.quantity,
+                'total_price': str(total_price)
+            })
+        
+        total_amount = sum(float(item['total_price']) for item in items)  # Convert total_price back to float
+        
+        response_data = {
+            'cart_items': items,
+            'total_amount': str(total_amount),  # Convert total_amount to string
+            'cart_item_count': cart_items.count()
+        }
+        return JsonResponse(response_data)
+    
+    except ShoppingCart.DoesNotExist:
+        response_data = {
+            'cart_items': [],
+            'total_amount': '0',
+            'cart_item_count': 0
+        }
+        return JsonResponse(response_data)
+    
+
+@login_required
+@require_http_methods(["POST"])
+def place_order(request):
+    try:
+        user = request.user
+        data = json.loads(request.body)
+        
+        # Fetch the user's shopping cart
+        cart = ShoppingCart.objects.get(user=user)
+        cart_items = CartItem.objects.filter(cart=cart)
+        
+        # Calculate total amount
+        total_amount = sum(item.product.price * item.quantity for item in cart_items)
+        
+        # Create the order
+        order = Order.objects.create(
+            user=user,
+            cart=cart,
+            total_amount=total_amount,
+            order_status='pending'
+        )
+        
+        # Create order items
+        for item in cart_items:
+            OrderItem.objects.create(
+                order=order,
+                cart_item=item,
+                product=item.product,
+                quantity=item.quantity,
+                unit_price=item.product.price
+            )
+        
+        # Clear the cart
+        cart_items.delete()
+
+        return JsonResponse({'message': 'Order placed successfully!'})
+
+    except ShoppingCart.DoesNotExist:
+        return JsonResponse({'error': 'Shopping cart not found'}, status=404)
+
+    except Exception as e:
+        return JsonResponse({'error': str(e)}, status=500)
 

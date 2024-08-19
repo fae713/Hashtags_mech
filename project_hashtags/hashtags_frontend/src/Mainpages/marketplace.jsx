@@ -178,11 +178,11 @@ const Productcards = ({ addToCart }) => {
     { id: 2, image: ButterflyShirt, title: 'Wildthought Sweatshirt', price: '₦187,340', category: 'Wildthought' },
     { id: 3, image: ButterflyShirt, title: 'Butterfly Sweatshirt', price: '₦187,340', category: 'Butterfly' },
     { id: 4, image: ButterflyShirt, title: 'Wildthought T-shirt', price: '₦20,000', category: 'Wildthought' },
-    { id: 5, image: ButterflyShirt, title: 'Wildthought T-shirt', price: '₦20,000', category: 'Wildthought' },
+    { id: 5, image: ButterflyShirt, title: 'Wildthought T-shirt', price: '₦20,000', category: 'Butterfly' },
     { id: 6, image: ButterflyShirt, title: 'Wildthought T-shirt', price: '₦20,000', category: 'Wildthought' },
     { id: 7, image: ButterflyShirt, title: 'Wildthought T-shirt', price: '₦20,000', category: 'Wildthought' },
     { id: 8, image: ButterflyShirt, title: 'Wildthought T-shirt', price: '₦20,000', category: 'Wildthought' },
-    { id: 9, image: ButterflyShirt, title: 'Wildthought T-shirt', price: '₦20,000', category: 'Wildthought' },
+    { id: 9, image: ButterflyShirt, title: 'Wildthought T-shirt', price: '₦20,000', category: 'Butterfly' },
   ];
 
   const filteredProducts = Products.filter(

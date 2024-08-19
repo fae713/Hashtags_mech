@@ -14,6 +14,7 @@ import { useCart } from '../Components/cartcontext';
 const HomePage = () => {
   const [csrfToken, setCsrfToken] = useState('');
   const [showPopup, setShowPopup] = useState(false);  // State for popup visibility
+  const [showWelcomePopup, setShowWelcomePopup] = useState(false); // State for welcome popup
   const quantity = 1; // Set default quantity to 1
   const { setCartItemCount } = useCart();  // Use the setCartItemCount from the CartContext
 
@@ -29,6 +30,15 @@ const HomePage = () => {
     };
 
     fetchCsrfToken();
+  }, []);
+
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setShowWelcomePopup(true);
+      setTimeout(() => setShowWelcomePopup(false), 10000);
+    }, 5000); // Show popup after 5 seconds
+
+    return () => clearTimeout(timer);
   }, []);
 
   const addToCart = (productId) => {
@@ -164,9 +174,11 @@ const HomePage = () => {
             </div>
           ))}
         </div>
-        <Button className="mt-5 md:mt-10 text-lg items-center h-full w-80 bg-purple-700 text-white hover:bg-purple-800" onClick={() => alert('View Marketplace clicked!')}>
-          View Marketplace
+        <Link to="/store">
+        <Button className="mt-5 md:mt-10 text-lg items-center h-full w-80 bg-purple-700 text-white hover:bg-purple-800">
+          View Store
         </Button>
+      </Link>
       </div>
     )
   }
@@ -195,6 +207,12 @@ const HomePage = () => {
       {showPopup && (
         <div className="fixed bottom-5 right-5 bg-green-500 text-white px-4 py-2 rounded-lg shadow-lg">
           Successfully added to cart!
+        </div>
+      )}
+      {showWelcomePopup && (
+        <div className="fixed bottom-5 right-5 bg-purple-700 text-white px-4 py-2 rounded-lg shadow-lg">
+          Hello, kindly register or login to shop for products.
+          Ignore if logged in. Enjoy your shopping!
         </div>
       )}
     </div>

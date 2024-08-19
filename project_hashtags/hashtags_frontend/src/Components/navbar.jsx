@@ -3,7 +3,7 @@ import { Link, useLocation } from 'react-router-dom';
 import Logo from '../Components/Assets/logo.png';
 import { FiSearch } from "react-icons/fi";
 import { HiOutlineX, HiOutlineMenuAlt3, HiOutlineUser, HiOutlineShoppingBag } from "react-icons/hi";
-import { useCart } from '../Components/cartcontext';  // Import useCart from cartcontext
+import { useCart } from '../Components/cartcontext';
 
 const Navbar = () => {
   const location = useLocation();
@@ -18,7 +18,7 @@ const Navbar = () => {
     })
       .then(response => response.json())
       .then(data => {
-        console.log('User Status:', data);  // Log the response data
+        console.log('User Status:', data);
         setIsAuthenticated(!!data.id);
       })
       .catch(error => {
@@ -70,7 +70,9 @@ const Navbar = () => {
       <nav className='fixed flex justify-between items-center h-20 w-full px-5 md:px-10 bg-[#000000] shadow-lg'>
         <div>
           <div className='w-[100%] md:w-full h-10'>
-            <img className="max-w-full max-h-full object-cover object-center" src={Logo} alt="Logo" />
+            <Link to="/home">
+              <img className="max-w-full max-h-full object-cover object-center" src={Logo} alt="Logo" />
+            </Link>
           </div>
         </div>
 
@@ -78,8 +80,8 @@ const Navbar = () => {
           <li className={`p-5 ${location.pathname === '/home' ? 'text-purple-500' : ''}`}>
             <Link to="/home">Home</Link>
           </li>
-          <li className={`p-5 ${location.pathname === '/marketplace' ? 'text-purple-500' : ''}`}>
-            <Link to="/marketplace">Marketplace</Link>
+          <li className={`p-5 ${location.pathname === '/store' ? 'text-purple-500' : ''}`}>
+            <Link to="/store">Store</Link>
           </li>
           <li className={`p-5 ${location.pathname === '/contact' ? 'text-purple-500' : ''}`}>
             <Link to="/contact">Contact Us</Link>
@@ -87,7 +89,6 @@ const Navbar = () => {
         </ul>
         {/* navigation icons start here */}
         <div className='flex justify-between h-16 items-center px-0 text-white'>
-          {/* Shopping cart icon wrapped with Link component */}
           <div className='relative mx-1 p-1 text-2xl md:text-xl stroke-2'>
             <Link to="/cart">
               <HiOutlineShoppingBag />
@@ -142,8 +143,8 @@ const Navbar = () => {
             <li className={`p-5 ${location.pathname === '/home' ? 'text-purple-500' : ''}`}>
               <Link to="/home" onClick={handleNav}>HOME</Link>
             </li>
-            <li className={`p-5 ${location.pathname === '/marketplace' ? 'text-purple-500' : ''}`}>
-              <Link to="/marketplace" onClick={handleNav}>MARKETPLACE</Link>
+            <li className={`p-5 ${location.pathname === '/store' ? 'text-purple-500' : ''}`}>
+              <Link to="/store" onClick={handleNav}>STORE</Link>
             </li>
             <li className={`p-5 ${location.pathname === '/contact' ? 'text-purple-500' : ''}`}>
               <Link to="/contact" onClick={handleNav}>CONTACT US</Link>

@@ -8,7 +8,7 @@ import WildThoughtHoodie from '../Components/Assets/wildthought hoodie.png';
 import Button from '../Components/button';
 import { FaStar } from "react-icons/fa";
 import { useCart } from '../Components/cartcontext';
-import { Link } from 'react-router-dom';  // Import Link from react-router-dom
+import { Link } from 'react-router-dom';
 
 const ProductPage = () => {
   const [csrfToken, setCsrfToken] = useState('');
@@ -44,18 +44,18 @@ const ProductPage = () => {
     .then(response => {
       if (response.data.success) {
         console.log('Item added to cart:', response.data);
-        setShowPopup(true);  // Show the popup on success
+        setShowPopup(true);
 
-        axios.get('/users/cart/item-count/')  // Use the correct URL here
+        axios.get('/users/cart/item-count/') 
           .then(response => {
-            console.log('Fetched cart item count:', response.data.count); // Log the count
+            console.log('Fetched cart item count:', response.data.count);
             setCartItemCount(response.data.count);  
           })
           .catch(error => {
             console.error('Error fetching cart item count:', error);
           });
 
-        setTimeout(() => setShowPopup(false), 3000);  // Hide the popup after 3 seconds
+        setTimeout(() => setShowPopup(false), 3000);
       } else {
         console.error('Error adding item to cart:', response.data.error);
       }
@@ -105,7 +105,7 @@ const Productsection = ({ csrfToken, handleAddToCart, showPopup }) => {
           <div className="flex flex-col mt-10">
             <Button 
               className="text-sm py-2 px-4 border-2 text-center border-purple-700 text-purple-700 hover:bg-purple-700 hover:text-white rounded-lg w-full md:w-1/2"
-              onClick={() => handleAddToCart(1)}>
+              onClick={() => handleAddToCart(6)}>
               Add to Cart
             </Button>
           </div>

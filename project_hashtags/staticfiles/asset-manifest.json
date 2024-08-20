@@ -1,0 +1,30 @@
+{
+  "files": {
+    "main.css": "/static/css/main.e793b12b.css",
+    "main.js": "/static/js/main.6b29caad.js",
+    "static/js/453.86ff5e4e.chunk.js": "/static/js/453.86ff5e4e.chunk.js",
+    "static/media/9jacket.png": "/static/media/9jacket.4b12eb365f5516373405.png",
+    "static/media/hero.png": "/static/media/hero.33bb1813972b934bf3a2.png",
+    "static/media/3shirt.png": "/static/media/3shirt.977547f820dbc43f9472.png",
+    "static/media/6hoodie.png": "/static/media/6hoodie.a8fca58bf5159404cd4e.png",
+    "static/media/7hoodie.png": "/static/media/7hoodie.4af458d7c7eb643add88.png",
+    "static/media/5shirt.png": "/static/media/5shirt.3987d9def2ad960fe2b4.png",
+    "static/media/2jacket.png": "/static/media/2jacket.8071a5ee73b825d91cbc.png",
+    "static/media/8shirt.png": "/static/media/8shirt.26d80085d94dd6e84897.png",
+    "static/media/sample.jpg": "/static/media/sample.4d93e3af3e6303859d5a.jpg",
+    "static/media/xample.jpg": "/static/media/xample.a9fff11f62aef789bed0.jpg",
+    "static/media/wild thought jacket.png": "/static/media/wild thought jacket.529d621accd70a098a59.png",
+    "static/media/butterfly shirt.png": "/static/media/butterfly shirt.912aa98ae0959194ed91.png",
+    "static/media/wildthought hoodie.png": "/static/media/wildthought hoodie.472ac089ebecc0256f95.png",
+    "static/media/butterfly hoodie.png": "/static/media/butterfly hoodie.76a5768aa1690d994dad.png",
+    "static/media/butterfly jacket.png": "/static/media/butterfly jacket.0b7fe0c0dee487fe3fcc.png",
+    "index.html": "/index.html",
+    "main.e793b12b.css.map": "/static/css/main.e793b12b.css.map",
+    "main.6b29caad.js.map": "/static/js/main.6b29caad.js.map",
+    "453.86ff5e4e.chunk.js.map": "/static/js/453.86ff5e4e.chunk.js.map"
+  },
+  "entrypoints": [
+    "static/css/main.e793b12b.css",
+    "static/js/main.6b29caad.js"
+  ]
+}

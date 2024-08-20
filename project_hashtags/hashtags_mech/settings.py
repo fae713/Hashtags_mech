@@ -22,7 +22,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # See https://docs.djangoproject.com/en/5.1/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'django-insecure-v=ah@u$im%f3h%1wl*dhnee=r&!o7p@dzka$!uh-8&#)sr1cfe'
+
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = False
@@ -31,6 +31,8 @@ ALLOWED_HOSTS = [
     'localhost',
     '127.0.0.1',
     'hashtags-mech.onrender.com',
+    'www.hashtags-mech.onrender.com',
+    '0.0.0.0',
     ]
 
 
@@ -94,6 +96,7 @@ CORS_ALLOW_CREDENTIALS = True
 CORS_ORIGIN_WHITELIST = (
     'http://127.0.0.1:8000',
     'http://localhost:8000',
+    'https://hashtags-mech.onrender.com',
 )
 
 ROOT_URLCONF = 'hashtags_mech.urls'
@@ -197,6 +200,12 @@ EMAIL_HOST_PASSWORD = config('EMAIL_HOST_PASSWORD')
 
 EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
 
+
+INTERNAL_IPS = [
+    # ...
+    "127.0.0.1",
+    # ...
+]
 
 #LOGIN REDIRECT
 # settings.py

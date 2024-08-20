@@ -1,2 +1,2 @@
-web: gunicorn project_hashtags.wsgi:application --log-file -
+web: gunicorn project_hashtags.wsgi:application --bind 0.0.0.0:$PORT
 

@@ -10,9 +10,9 @@ from django.views.generic import TemplateView
 
 #app_name = "marketplace"
 urlpatterns = [
-    path('', views.index, name='index'),  # Home page
+    #path('', views.IndexView.as_view(), name='index'),
     #path('home/', TemplateView.as_view(template_name="index.html",)),
-    #path('', TemplateView.as_view(template_name="index.html",)),  
+    path('', TemplateView.as_view(template_name="index.html"), name='index'),  
 
 
     #USER URLS MANAGEMENT

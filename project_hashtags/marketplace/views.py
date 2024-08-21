@@ -42,9 +42,9 @@ Decorator to render the homepage (LANDING PAGE)
 def index(request):
     return render(request, 'index.html')"""
 
-@require_http_methods({"GET"})
-class index(TemplateView):
-    template_name = 'hashtags_frontend/build/index.html'
+@require_http_methods(["GET"])
+class IndexView(TemplateView):
+    template_name = 'index.html'
 
 
 """"

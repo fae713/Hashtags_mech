@@ -20,15 +20,12 @@ from django.urls import include
 from django.conf import settings
 from django.conf.urls.static import static
 from django.http import Http404
-from django.views.generic import TemplateView
 
 urlpatterns = [
     #path('', index, name='index'),
     path('admin/', admin.site.urls),
     path('', include('marketplace.urls')),
     path("__debug__/", include("debug_toolbar.urls")),
-    # Serve the React app's index.html for the root URL
-    path('', TemplateView.as_view(template_name='index.html'), name='index'),
 ]
 
 # Serve media files only during development

@@ -31,15 +31,20 @@ from rest_framework.decorators import api_view
 from rest_framework.response import Response
 from django.middleware.csrf import get_token
 import logging, json
+from django.views.generic import TemplateView
 
 
 
 """
 Decorator to render the homepage (LANDING PAGE)
 """
-@require_http_methods(["GET"])
+"""@require_http_methods(["GET"])
 def index(request):
-    return render(request, 'index.html')
+    return render(request, 'index.html')"""
+
+@require_http_methods({"GET"})
+class index(TemplateView):
+    template_name = 'hashtags_frontend/build/index.html'
 
 
 """"

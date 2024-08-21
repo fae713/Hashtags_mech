@@ -33,6 +33,8 @@ ALLOWED_HOSTS = [
     'hashtags-mech.onrender.com',
     'www.hashtags-mech.onrender.com',
     '0.0.0.0',
+    '.vercel.app', 
+    '.now.sh',
     ]
 
 
@@ -220,3 +222,7 @@ CSRF_COOKIE_SECURE = True  # Ensure this matches your environment (set to False 
 SESSION_COOKIE_SECURE = True
 #SECURE_SSL_REDIRECT = True
 
+
+#SETUP FOR VERCEL
+STATICFILES_DIRS = os.path.join(BASE_DIR, 'static'),
+STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles_build', 'static')

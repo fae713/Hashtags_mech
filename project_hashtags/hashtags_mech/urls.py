@@ -21,12 +21,18 @@ from django.conf import settings
 from django.conf.urls.static import static
 from django.http import Http404
 
+
+
 urlpatterns = [
     #path('', index, name='index'),
     path('admin/', admin.site.urls),
     path('', include('marketplace.urls')),
     path("__debug__/", include("debug_toolbar.urls")),
-]
+]; 
+# add at the last
+urlpatterns += static(settings.MEDIA_URL, document_root = settings.MEDIA_ROOT)
+urlpatterns += static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
+
 
 # Serve media files only during development
 if settings.DEBUG:

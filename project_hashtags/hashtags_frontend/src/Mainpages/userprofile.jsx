@@ -16,11 +16,11 @@ const UserProfile = () => {
   useEffect(() => {
     const fetchCsrfAndUserProfile = async () => {
       try {
-        const csrfResponse = await fetch('/get-csrf-token/');
+        const csrfResponse = await fetch('https://hashtags-mech.onrender.com/get-csrf-token/');
         const csrfData = await csrfResponse.json();
         setCsrfToken(csrfData.csrfToken);
 
-        const userResponse = await fetch('/profile/', {
+        const userResponse = await fetch('https://hashtags-mech.onrender.com/profile/', {
           headers: {
             'Accept': 'application/json',
             'X-CSRFToken': csrfData.csrfToken,
@@ -43,7 +43,7 @@ const UserProfile = () => {
 
   const fetchUserOrders = async () => {
     try {
-      const response = await fetch('/orders/', {
+      const response = await fetch('https://hashtags-mech.onrender.com/orders/', {
         headers: {
           'Accept': 'application/json',
           'X-CSRFToken': csrfToken,
@@ -63,7 +63,7 @@ const UserProfile = () => {
 
   const handleLogout = async () => {
     try {
-      const response = await fetch('/logout/', {
+      const response = await fetch('https://hashtags-mech.onrender.com/logout/', {
         method: 'POST',
         headers: {
           'X-CSRFToken': csrfToken,

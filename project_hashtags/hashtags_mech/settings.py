@@ -215,7 +215,7 @@ INTERNAL_IPS = [
 #LOGIN_REDIRECT_URL = '/'
 #LOGOUT_REDIRECT_URL = '/'
 
-#CSRF_TRUSTED_ORIGINS = ["https://hashtags-mech.onrender.com"]
+CSRF_TRUSTED_ORIGINS = ["https://hashtags-mech.onrender.com"]
 
 #CSRF_COOKIE_HTTPONLY = True
 CSRF_COOKIE_SECURE = True  # Ensure this matches your environment (set to False in development)
@@ -223,6 +223,3 @@ SESSION_COOKIE_SECURE = True
 #SECURE_SSL_REDIRECT = True
 
 
-#SETUP FOR VERCEL
-STATICFILES_DIRS = os.path.join(BASE_DIR, 'static'),
-STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles_build', 'static')

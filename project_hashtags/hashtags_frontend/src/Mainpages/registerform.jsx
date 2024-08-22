@@ -18,7 +18,7 @@ const RegisterForm = () => {
   useEffect(() => {
     const fetchCsrfToken = async () => {
       try {
-        const response = await fetch('/get-csrf-token/');
+        const response = await fetch('https://hashtags-mech.onrender.com/get-csrf-token/');
         const data = await response.json();
         setCsrfToken(data.csrfToken);
       } catch (error) {
@@ -44,7 +44,7 @@ const RegisterForm = () => {
     }
   
     try {
-      const response = await fetch('/register/submit/', {
+      const response = await fetch('https://hashtags-mech.onrender.com/register/submit/', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -54,7 +54,7 @@ const RegisterForm = () => {
       });
   
       if (response.ok) {
-        const loginResponse = await fetch('/ajax_login/', {
+        const loginResponse = await fetch('https://hashtags-mech.onrender.com/ajax_login/', {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',

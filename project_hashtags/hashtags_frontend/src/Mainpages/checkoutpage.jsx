@@ -22,7 +22,7 @@ const Checkout = () => {
     // Fetch CSRF token
     const fetchCsrfToken = async () => {
       try {
-        const response = await fetch('/get-csrf-token/');
+        const response = await fetch('https://hashtags-mech.onrender.com/get-csrf-token/');
         const data = await response.json();
         setCsrfToken(data.csrfToken);
       } catch (error) {
@@ -33,7 +33,7 @@ const Checkout = () => {
     fetchCsrfToken();
 
     // Fetch cart details
-    axios.get('/checkout/')
+    axios.get('https://hashtags-mech.onrender.com/checkout/')
       .then(response => {
         const cartItems = response.data.cart_items.map(item => ({
           ...item,
@@ -73,7 +73,7 @@ const Checkout = () => {
 
     try {
       // Place order and clear cart
-      const response = await axios.post('/place_order/', formData, {
+      const response = await axios.post('https://hashtags-mech.onrender.com/place_order/', formData, {
         headers: {
           'Content-Type': 'application/json',
           'X-CSRFToken': csrfToken,
@@ -82,7 +82,7 @@ const Checkout = () => {
 
       if (response.status === 200) {
         // Clear cart
-        await axios.post('/users/cart/clear/', {}, {
+        await axios.post('https://hashtags-mech.onrender.com/users/cart/clear/', {}, {
           headers: {
             'Content-Type': 'application/json',
             'X-CSRFToken': csrfToken,

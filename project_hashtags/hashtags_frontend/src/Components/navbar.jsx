@@ -13,7 +13,7 @@ const Navbar = () => {
 
   // Fetch user authentication status
   useEffect(() => {
-    fetch('user/status/', {
+    fetch('https://hashtags-mech.onrender.com/user/status/', {
       credentials: 'include'  // Ensure the session cookie is sent
     })
       .then(response => response.json())
@@ -31,7 +31,7 @@ const Navbar = () => {
   useEffect(() => {
     const fetchCartItemCount = async () => {
       try {
-        const response = await fetch('users/cart/item-count/', {
+        const response = await fetch('https://hashtags-mech.onrender.com/users/cart/item-count/', {
           credentials: 'include'  // Ensure the session cookie is sent
         });
         if (!response.ok) {

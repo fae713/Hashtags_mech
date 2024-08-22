@@ -14,7 +14,7 @@ const LoginForm = () => {
     // Fetch the CSRF token from a Django endpoint
     const fetchCsrfToken = async () => {
       try {
-        const response = await fetch('/get-csrf-token/');
+        const response = await fetch('https://hashtags-mech.onrender.com/get-csrf-token/');
         const data = await response.json();
         setCsrfToken(data.csrfToken);
       } catch (error) {
@@ -36,7 +36,7 @@ const LoginForm = () => {
     e.preventDefault();
 
     try {
-      const response = await fetch('/ajax_login/', {
+      const response = await fetch('https://hashtags-mech.onrender.com/ajax_login/', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

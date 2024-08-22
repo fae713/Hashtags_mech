@@ -21,7 +21,7 @@ const HomePage = () => {
   useEffect(() => {
     const fetchCsrfToken = async () => {
       try {
-        const response = await fetch('/get-csrf-token/');
+        const response = await fetch('https://hashtags-mech.onrender.com/get-csrf-token/');
         const data = await response.json();
         setCsrfToken(data.csrfToken);
       } catch (error) {
@@ -42,7 +42,7 @@ const HomePage = () => {
   }, []);
 
   const addToCart = (productId) => {
-    axios.post(`/users/cart/add/${productId}/`, 
+    axios.post(`https://hashtags-mech.onrender.com/users/cart/add/${productId}/`, 
       { quantity }, 
       {
         headers: {
@@ -57,7 +57,7 @@ const HomePage = () => {
         setShowPopup(true);  
         setTimeout(() => setShowPopup(false), 3000);  
   
-        axios.get('/users/cart/item-count/')
+        axios.get('https://hashtags-mech.onrender.com/users/cart/item-count/')
           .then(response => {
             console.log('Fetched cart item count:', response.data.count);
             setCartItemCount(response.data.count);  

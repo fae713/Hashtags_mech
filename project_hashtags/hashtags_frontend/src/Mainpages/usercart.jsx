@@ -11,7 +11,7 @@ const UserCart = () => {
   useEffect(() => {
     const fetchCsrfToken = async () => {
       try {
-        const response = await axios.get('/get-csrf-token/');
+        const response = await axios.get('https://hashtags-mech.onrender.com/get-csrf-token/');
         setCsrfToken(response.data.csrfToken);
       } catch (error) {
         console.error('Error fetching CSRF token:', error);
@@ -22,7 +22,7 @@ const UserCart = () => {
   }, []);
 
   useEffect(() => {
-    axios.get('/users/cart/')
+    axios.get('https://hashtags-mech.onrender.com/users/cart/')
       .then(response => {
         console.log('Cart items response:', response.data);
         if (response.data && Array.isArray(response.data.cart_items)) {
@@ -39,7 +39,7 @@ const UserCart = () => {
   }, []);
 
   const removeFromCart = (productId) => {
-    axios.delete(`/users/cart/remove/${productId}/`, {
+    axios.delete(`https://hashtags-mech.onrender.com/users/cart/remove/${productId}/`, {
       headers: {
         'X-CSRFToken': csrfToken,
       }
@@ -54,7 +54,7 @@ const UserCart = () => {
   };
 
   const addToCart = (productId, addQuantity = 1) => {
-    axios.post(`/users/cart/add/${productId}/`, 
+    axios.post(`https://hashtags-mech.onrender.com/users/cart/add/${productId}/`, 
       { quantity: addQuantity }, 
       {
         headers: {
@@ -86,7 +86,7 @@ const UserCart = () => {
   };
 
   const clearCart = () => {
-    axios.delete('/users/cart/clear/', {
+    axios.delete('https://hashtags-mech.onrender.com/users/cart/clear/', {
       headers: {
         'X-CSRFToken': csrfToken,
       }

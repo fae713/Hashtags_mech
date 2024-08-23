@@ -87,7 +87,7 @@ Before starting, ensure you have the following installed:
 
 ## API Documentation
 
-Detailed API documentation is available at `marketplace/urls.py` and `marketplace/views.py` on the Django app `marketplace`. This provides comprehensive information about the available endpoints, request parameters, and response formats.
+Detailed API documentation is available at `openapi.yaml` in the root directory or `/swagger`. This provides comprehensive information about the endpoints, request parameters, and response formats.
 
 ## License
 

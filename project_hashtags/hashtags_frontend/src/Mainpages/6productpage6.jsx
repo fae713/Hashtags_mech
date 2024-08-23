@@ -156,7 +156,7 @@ const RelatedProducts = ({ csrfToken, handleAddToCart, showPopup }) => {
         {products.map((product) => (
           <div key={product.id} className="bg-white overflow-hidden shadow-md rounded-lg">
             <div className='bg-[#F2F2F2] p-5 w-full flex flex-col items-center'>
-              <img className="w-[250px] h-[250px] object-cover object-center" src={product.image} alt={product.name} />
+              <img className="w-[250px] h-[100%] object-cover object-center" src={product.image} alt={product.name} />
             </div>   
             <div className="py-5 px-4">
               <Link to={`/products/${product.id}`}>

@@ -46,7 +46,7 @@ const LoginForm = () => {
       });
 
       if (response.ok) {
-        window.location.href = '/home';  // Refresh the page and navigate to /home
+        window.location.href = '/';  // Refresh the page and navigate to /home
       } else {
         const errorData = await response.json();
         setErrors(errorData);

@@ -1,0 +1,748 @@
+openapi: 3.0.0
+info:
+  title: Hashtags Mech MArketplace APIs
+  description: API documentation for the Hashtags Mech MArketplace web application.
+  version: 1.0.0
+paths:
+  /index:
+    get:
+      summary: Render the homepage
+      operationId: indexView
+      responses:
+        '200':
+          description: Homepage rendered successfully
+          content:
+            text/html:
+              schema:
+                type: string
+
+  /register:
+    post:
+      summary: Register a new user
+      operationId: register
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                username:
+                  type: string
+                password:
+                  type: string
+                email:
+                  type: string
+                first_name:
+                  type: string
+                last_name:
+                  type: string
+      responses:
+        '201':
+          description: User created successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+        '400':
+          description: Invalid JSON or form data
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+        '409':
+          description: Username or email already exists
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+
+  /ajax_login:
+    post:
+      summary: Login user via AJAX
+      operationId: ajaxLogin
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                username:
+                  type: string
+                password:
+                  type: string
+      responses:
+        '200':
+          description: Login successful
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+        '400':
+          description: Invalid login credentials
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                  message:
+                    type: string
+
+  /csrf-token:
+    get:
+      summary: Get CSRF token
+      operationId: getCsrfToken
+      responses:
+        '200':
+          description: CSRF token retrieved successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  csrfToken:
+                    type: string
+
+  /user/profile:
+    get:
+      summary: Get user profile
+      operationId: getUserProfile
+      responses:
+        '200':
+          description: User profile retrieved successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  user:
+                    type: object
+                    properties:
+                      id:
+                        type: integer
+                      username:
+                        type: string
+                      email:
+                        type: string
+                      first_name:
+                        type: string
+                      last_name:
+                        type: string
+        '404':
+          description: User does not exist
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+
+  /user/profile:
+    put:
+      summary: Update user profile
+      operationId: updateUserProfile
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                username:
+                  type: string
+                email:
+                  type: string
+                first_name:
+                  type: string
+                last_name:
+                  type: string
+                password:
+                  type: string
+      responses:
+        '200':
+          description: User profile updated successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+        '400':
+          description: Invalid content type or data
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+        '404':
+          description: User does not exist
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+
+  /user/orders:
+    get:
+      summary: List orders placed by the user
+      operationId: listOrdersPlacedByUser
+      responses:
+        '200':
+          description: Orders listed successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  orders:
+                    type: array
+                    items:
+                      type: object
+        '404':
+          description: No orders found for the user
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+
+  /user/status:
+    get:
+      summary: Get user status
+      operationId: userStatusView
+      responses:
+        '200':
+          description: User status retrieved successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  id:
+                    type: integer
+                  username:
+                    type: string
+                  email:
+                    type: string
+                  is_active:
+                    type: boolean
+                  date_joined:
+                    type: string
+                    format: date-time
+                  last_login:
+                    type: string
+                    format: date-time
+                  isAuthenticated:
+                    type: boolean
+
+  /products:
+    get:
+      summary: List all products
+      operationId: listAllProducts
+      responses:
+        '200':
+          description: Products listed successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  current_page:
+                    type: integer
+                  total_pages:
+                    type: integer
+                  query_results:
+                    type: array
+                    items:
+                      type: object
+        '404':
+          description: No products found
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+
+  /products/{id}:
+    get:
+      summary: Fetch product by ID
+      operationId: fetchProductById
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Product retrieved successfully
+          content:
+            application/json:
+              schema:
+                type: object
+        '404':
+          description: Product not found
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+
+  /products:
+    post:
+      summary: Create a new product
+      operationId: createNewProduct
+      requestBody:
+        required: true
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              properties:
+                name:
+                  type: string
+                description:
+                  type: string
+                price:
+                  type: number
+                quantity_in_stock:
+                  type: integer
+                category:
+                  type: string
+                image:
+                  type: string
+                  format: binary
+      responses:
+        '200':
+          description: Product created successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+        '400':
+          description: Error creating product
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+
+  /products/{id}:
+    put:
+      summary: Update product details
+      operationId: updateProductIdDetails
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+      responses:
+        '200':
+          description: Product updated successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+        '400':
+          description: Error updating product
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+        '404':
+          description: Product not found
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+
+  /products/{id}:
+    delete:
+      summary: Delete product by ID
+      operationId: deleteProductById
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Product deleted successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+        '404':
+          description: Product not found
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+
+  /collections:
+    get:
+      summary: List all collections
+      operationId: listAllCollections
+      responses:
+        '200':
+          description: Collections listed successfully
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: object
+        '404':
+          description: No collections found
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+
+  /categories:
+    get:
+      summary: Get list of all product categories
+      operationId: getListOfAllProductCategories
+      responses:
+        '200':
+          description: Categories listed successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  categories:
+                    type: array
+                    items:
+                      type: object
+        '404':
+          description: No categories found
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+
+  /cart/add:
+    post:
+      summary: Add a product to the cart
+      operationId: addProductToCart
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                product_id:
+                  type: integer
+                quantity:
+                  type: integer
+      responses:
+        '200':
+          description: Product added to cart successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+        '400':
+          description: Error adding product to cart
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+
+  /cart/remove:
+    post:
+      summary: Remove a product from the cart
+      operationId: removeProductFromCart
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                product_id:
+                  type: integer
+                quantity:
+                  type: integer
+      responses:
+        '200':
+          description: Product removed from cart successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+        '400':
+          description: Error removing product from cart
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+
+  /cart/clear:
+    post:
+      summary: Clear the entire shopping cart
+      operationId: clearEntireShoppingCart
+      responses:
+        '200':
+          description: Cart cleared successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+
+  /cart/item-count/:
+    get:
+      summary: Get Cart Item Count
+      description: Retrieve the number of items in the user's shopping cart.
+      responses:
+        '200':
+          description: Successful response with cart item count
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  cart_item_count:
+                    type: integer
+                    example: 5
+        '401':
+          description: Unauthorized if the user is not logged in
+        '500':
+          description: Internal server error
+
+  /cart/add/{productId}/:
+    post:
+      summary: Add Product to Cart
+      description: Add a product to the user's shopping cart. Quantity must be provided.
+      parameters:
+        - in: path
+          name: productId
+          required: true
+          schema:
+            type: integer
+          description: The ID of the product to add to the cart.
+        - in: formData
+          name: quantity
+          schema:
+            type: integer
+            default: 1
+          description: The quantity of the product to add to the cart.
+      responses:
+        '200':
+          description: Product added to cart successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                  cart_item_id:
+                    type: integer
+                    example: 123
+        '400':
+          description: Bad request if the quantity exceeds stock or other validation errors
+        '404':
+          description: Product not found
+        '500':
+          description: Internal server error
+
+  /cart/remove/{productId}/:
+    delete:
+      summary: Remove Product from Cart
+      description: Remove a specific product from the user's shopping cart.
+      parameters:
+        - in: path
+          name: productId
+          required: true
+          schema:
+            type: integer
+          description: The ID of the product to remove from the cart.
+      responses:
+        '200':
+          description: Product removed from cart successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: 'Item removed from cart.'
+        '404':
+          description: Cart or product not found
+        '500':
+          description: Internal server error
+
+  /cart/clear/:
+    delete:
+      summary: Clear Entire Shopping Cart
+      description: Remove all items from the user's shopping cart.
+      responses:
+        '200':
+          description: Cart cleared successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: 'Cart cleared successfully.'
+        '404':
+          description: Cart not found
+        '500':
+          description: Internal server error
+
+  /checkout/:
+    get:
+      summary: Checkout
+      description: Retrieve the current contents of the user's cart and calculate the total amount.
+      responses:
+        '200':
+          description: Successful response with cart contents and total amount
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  cart_items:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        id:
+                          type: integer
+                          example: 1
+                        product_name:
+                          type: string
+                          example: 'Product Name'
+                        price:
+                          type: string
+                          example: '19.99'
+                        quantity:
+                          type: integer
+                          example: 2
+                        total_price:
+                          type: string
+                          example: '39.98'
+                  total_amount:
+                    type: string
+                    example: '39.98'
+                  cart_item_count:
+                    type: integer
+                    example: 2
+        '404':
+          description: Cart not found
+        '500':
+          description: Internal server error
+
+  /order/place/:
+    post:
+      summary: Place an Order
+      description: Place an order based on the current contents of the user's shopping cart.
+      requestBody:
+        description: Order details
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                order_details:
+                  type: string
+                  example: 'Order placed with 2 items.'
+      responses:
+        '200':
+          description: Order placed successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: 'Order placed successfully!'
+        '404':
+          description: Shopping cart not found
+        '500':
+          description: Internal server error

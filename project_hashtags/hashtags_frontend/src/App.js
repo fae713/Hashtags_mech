@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React from 'react';
 import Navbar from './Components/navbar';
 import Footer from './Components/footer';
 import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
@@ -24,13 +24,6 @@ import Productpage10 from './Mainpages/10productpage';
 import ContactUs from './Mainpages/contactus';
 
 function App() {
-  useEffect(() => {
-    // Redirect to external URL on initial load if the pathname is '/'
-    if (window.location.pathname === '/') {
-      window.location.href = 'https://hashtags-mech.onrender.com';
-    }
-  }, []);
-  
   return (
     <Router>
       <ScrollToTop />

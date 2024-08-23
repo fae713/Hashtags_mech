@@ -151,7 +151,7 @@ const HomePage = () => {
             <div key={product.id} className="bg-white overflow-hidden">
               <div className='bg-[#F2F2F2] p-5 w-full flex flex-col items-center'>
                 <Link to={`/products/${product.id}`}>  {/* Linking the product */}
-                  <img className="w-[250px] h-[250px] object-cover object-center" src={product.image} alt={product.name} 
+                  <img className="w-[250px] h-[100%] object-cover object-center" src={product.image} alt={product.name} 
                 />
                 </Link>
               </div>  
